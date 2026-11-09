@@ -1,0 +1,11 @@
+{
+  "name": "tare-portfolio-customized-workspace",
+  "version": "2.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix tare-portfolio run dev",
+    "build": "npm --prefix tare-portfolio run build",
+    "preview": "npm --prefix tare-portfolio run preview"
+  }
+}
+
