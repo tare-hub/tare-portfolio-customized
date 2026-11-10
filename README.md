@@ -1,4 +1,5 @@
-# Tariku Meseret (Tare) — Advanced Developer Portfolio v2.0
+# Tariku Meseret 
+— Advanced Developer Portfolio v2.0
 
 > **Elevated from a basic static HTML/CSS file into a production-grade, state-of-the-art Web Application** built with **TypeScript**, **React 18**, **Tailwind CSS**, and **Vite**.
 
