@@ -13,546 +13,803 @@ import {
   GitIcon,
   RestApiIcon,
 } from '../icons/TechBrandIcons';
-import { Sparkles, Radio, Zap, RotateCcw, Compass, Move } from 'lucide-react';
+import {
+  Sun,
+  Orbit,
+  Zap,
+  RotateCcw,
+  Compass,
+  Play,
+  Pause,
+  X,
+  Radio,
+} from 'lucide-react';
 import { soundFx } from '../../utils/audio';
 
-interface FloatingNode {
+export interface PlanetaryNode {
   id: string;
   name: string;
+  shortName: string;
   category: string;
   role: string;
+  description: string;
   color: string;
   glow: string;
-  icon: React.ReactNode;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  radius: number;
-  mass: number;
-  rotation: number;
-  vRot: number;
-  isDragging: boolean;
+  orbitIndex: number; // 0 (inner) to 3 (outer)
+  orbitTier: string;
+  angleOffset: number; // Initial radian position
+  speed: number;       // Base angular velocity in rad/frame
+  iconRenderer: (size: number) => React.ReactNode;
 }
 
-const INITIAL_NODES = [
-  { id: 'laravel', name: 'Laravel 13', category: 'Backend Engine', role: 'Primary Enterprise Architecture', color: '#FF2D20', glow: 'rgba(255, 45, 32, 0.4)', icon: <LaravelIcon size={32} /> },
-  { id: 'php', name: 'PHP 8.3+', category: 'Backend Language', role: 'High-Performance Web APIs', color: '#777BB4', glow: 'rgba(119, 123, 180, 0.4)', icon: <PhpIcon size={32} /> },
-  { id: 'vue', name: 'Vue 3', category: 'Frontend Framework', role: 'Composition API & Pinia Store', color: '#42B883', glow: 'rgba(66, 184, 131, 0.4)', icon: <VueIcon size={32} /> },
-  { id: 'react', name: 'React 18', category: 'Frontend Library', role: 'Component Architecture & State', color: '#61DAFB', glow: 'rgba(97, 218, 251, 0.4)', icon: <ReactIcon size={32} /> },
-  { id: 'ts', name: 'TypeScript', category: 'Language', role: 'Strict Type-Safe Systems', color: '#3178C6', glow: 'rgba(49, 120, 198, 0.4)', icon: <TypeScriptIcon size={32} /> },
-  { id: 'js', name: 'JavaScript ESNext', category: 'Language', role: 'Modern Asynchronous Engine', color: '#F7DF1E', glow: 'rgba(247, 223, 30, 0.4)', icon: <JavaScriptIcon size={32} /> },
-  { id: 'mysql', name: 'MySQL / MariaDB', category: 'Database', role: 'Normalized Relational Data', color: '#00758F', glow: 'rgba(0, 117, 143, 0.4)', icon: <MySqlIcon size={32} /> },
-  { id: 'redis', name: 'Redis 7', category: 'Caching Layer', role: 'Sub-2ms Memory Storage', color: '#DC382D', glow: 'rgba(220, 56, 45, 0.4)', icon: <RedisIcon size={32} /> },
-  { id: 'docker', name: 'Docker', category: 'DevOps', role: 'Containerized Deployment', color: '#2496ED', glow: 'rgba(36, 150, 237, 0.4)', icon: <DockerIcon size={32} /> },
-  { id: 'tailwind', name: 'Tailwind CSS', category: 'UI Design', role: 'Atomic Responsive Styling', color: '#38BDF8', glow: 'rgba(56, 189, 248, 0.4)', icon: <TailwindIcon size={32} /> },
-  { id: 'git', name: 'Git & GitHub', category: 'Workflow', role: 'Version Control & CI/CD', color: '#F05032', glow: 'rgba(240, 80, 50, 0.4)', icon: <GitIcon size={32} /> },
-  { id: 'rest', name: 'REST APIs', category: 'Architecture', role: 'Stateless Service Contracts', color: '#4ADE80', glow: 'rgba(74, 222, 128, 0.4)', icon: <RestApiIcon size={32} /> },
+export const PLANETARY_NODES: PlanetaryNode[] = [
+  // Orbit 0: Core Backend & Data Persistence (Innermost)
+  {
+    id: 'laravel',
+    name: 'Laravel 13',
+    shortName: 'Laravel',
+    category: 'Backend Architecture',
+    role: 'Primary Enterprise Architecture',
+    description: 'Tariku\'s core backend framework for enterprise-grade applications. Powers clean MVC architectures, queued background workers, Eloquent database models, and resilient RESTful APIs.',
+    color: '#FF2D20',
+    glow: 'rgba(255, 45, 32, 0.45)',
+    orbitIndex: 0,
+    orbitTier: 'Orbit I • Core Backend',
+    angleOffset: 0,
+    speed: 0.0075,
+    iconRenderer: (s) => <LaravelIcon size={s} />,
+  },
+  {
+    id: 'php',
+    name: 'PHP 8.3+',
+    shortName: 'PHP',
+    category: 'Server Language',
+    role: 'High-Performance Server Logic',
+    description: 'Modern, strictly-typed server-side language leveraging JIT compilation, enums, fibers, and strict type safety to execute performant backend services and business logic.',
+    color: '#777BB4',
+    glow: 'rgba(119, 123, 180, 0.45)',
+    orbitIndex: 0,
+    orbitTier: 'Orbit I • Core Backend',
+    angleOffset: (2 * Math.PI) / 3, // 120 deg
+    speed: 0.0075,
+    iconRenderer: (s) => <PhpIcon size={s} />,
+  },
+  {
+    id: 'mysql',
+    name: 'MySQL / MariaDB',
+    shortName: 'MySQL',
+    category: 'Database Tier',
+    role: 'ACID Relational Persistence',
+    description: 'Normalized relational schema architecture, composite indexing strategies, transaction isolation, and query optimization for high-scale structured data integrity.',
+    color: '#00758F',
+    glow: 'rgba(0, 117, 143, 0.45)',
+    orbitIndex: 0,
+    orbitTier: 'Orbit I • Core Backend',
+    angleOffset: (4 * Math.PI) / 3, // 240 deg
+    speed: 0.0075,
+    iconRenderer: (s) => <MySqlIcon size={s} />,
+  },
+
+  // Orbit 1: Modern Frontend & Reactive UIs
+  {
+    id: 'react',
+    name: 'React 18',
+    shortName: 'React',
+    category: 'Frontend Library',
+    role: 'Component Architecture & State',
+    description: 'Declarative user interfaces with concurrent rendering, custom hooks, atomic state management, and reusable enterprise design systems.',
+    color: '#61DAFB',
+    glow: 'rgba(97, 218, 251, 0.45)',
+    orbitIndex: 1,
+    orbitTier: 'Orbit II • Modern Frontend',
+    angleOffset: Math.PI / 6, // 30 deg offset
+    speed: 0.0052,
+    iconRenderer: (s) => <ReactIcon size={s} />,
+  },
+  {
+    id: 'vue',
+    name: 'Vue 3',
+    shortName: 'Vue',
+    category: 'Frontend Framework',
+    role: 'Composition API & Pinia Store',
+    description: 'Reactive single-page application framework utilizing the Composition API, script setup syntax, Pinia store state management, and fluid transitions.',
+    color: '#42B883',
+    glow: 'rgba(66, 184, 131, 0.45)',
+    orbitIndex: 1,
+    orbitTier: 'Orbit II • Modern Frontend',
+    angleOffset: Math.PI / 6 + (2 * Math.PI) / 3, // 150 deg
+    speed: 0.0052,
+    iconRenderer: (s) => <VueIcon size={s} />,
+  },
+  {
+    id: 'tailwind',
+    name: 'Tailwind CSS',
+    shortName: 'Tailwind',
+    category: 'UI Engineering',
+    role: 'Atomic Responsive Styling',
+    description: 'Utility-first CSS framework enabling bespoke dark-mode design systems, fluid typography, mobile-first layouts, and zero runtime CSS overhead.',
+    color: '#38BDF8',
+    glow: 'rgba(56, 189, 248, 0.45)',
+    orbitIndex: 1,
+    orbitTier: 'Orbit II • Modern Frontend',
+    angleOffset: Math.PI / 6 + (4 * Math.PI) / 3, // 270 deg
+    speed: 0.0052,
+    iconRenderer: (s) => <TailwindIcon size={s} />,
+  },
+
+  // Orbit 2: Strict Languages & In-Memory Cache
+  {
+    id: 'ts',
+    name: 'TypeScript',
+    shortName: 'TypeScript',
+    category: 'Type System',
+    role: 'Strict Type-Safe Systems',
+    description: 'End-to-end static type safety preventing runtime production errors, providing contract guarantees between frontend client interfaces and backend models.',
+    color: '#3178C6',
+    glow: 'rgba(49, 120, 198, 0.45)',
+    orbitIndex: 2,
+    orbitTier: 'Orbit III • Languages & Cache',
+    angleOffset: Math.PI / 3, // 60 deg offset
+    speed: 0.0036,
+    iconRenderer: (s) => <TypeScriptIcon size={s} />,
+  },
+  {
+    id: 'js',
+    name: 'JavaScript ESNext',
+    shortName: 'JavaScript',
+    category: 'Core Engine',
+    role: 'Modern Asynchronous Engine',
+    description: 'Deep mastery of ECMAScript standards: asynchronous event loops, promises, functional pipelines, DOM performance, and Web APIs.',
+    color: '#F7DF1E',
+    glow: 'rgba(247, 223, 30, 0.45)',
+    orbitIndex: 2,
+    orbitTier: 'Orbit III • Languages & Cache',
+    angleOffset: Math.PI / 3 + (2 * Math.PI) / 3, // 180 deg
+    speed: 0.0036,
+    iconRenderer: (s) => <JavaScriptIcon size={s} />,
+  },
+  {
+    id: 'redis',
+    name: 'Redis 7',
+    shortName: 'Redis',
+    category: 'In-Memory Store',
+    role: 'Sub-2ms High-Speed Caching',
+    description: 'High-performance in-memory key-value data store used for API response caching, active user sessions, distributed rate limiting, and pub/sub queues.',
+    color: '#DC382D',
+    glow: 'rgba(220, 56, 45, 0.45)',
+    orbitIndex: 2,
+    orbitTier: 'Orbit III • Languages & Cache',
+    angleOffset: Math.PI / 3 + (4 * Math.PI) / 3, // 300 deg
+    speed: 0.0036,
+    iconRenderer: (s) => <RedisIcon size={s} />,
+  },
+
+  // Orbit 3: DevOps, Workflows & Stateless APIs (Outermost)
+  {
+    id: 'docker',
+    name: 'Docker',
+    shortName: 'Docker',
+    category: 'Containerization',
+    role: 'Containerized Deployment',
+    description: 'Multi-stage container definitions and Docker Compose orchestrations ensuring identical runtime environments between local dev, testing, and production servers.',
+    color: '#2496ED',
+    glow: 'rgba(36, 150, 237, 0.45)',
+    orbitIndex: 3,
+    orbitTier: 'Orbit IV • DevOps & Contracts',
+    angleOffset: Math.PI / 2, // 90 deg offset
+    speed: 0.0022,
+    iconRenderer: (s) => <DockerIcon size={s} />,
+  },
+  {
+    id: 'git',
+    name: 'Git & GitHub',
+    shortName: 'Git',
+    category: 'Version Control',
+    role: 'Version Control & CI/CD',
+    description: 'Structured Git workflows, conventional commits, feature-branch pull requests, code reviews, and automated GitHub Actions deployment pipelines.',
+    color: '#F05032',
+    glow: 'rgba(240, 80, 50, 0.45)',
+    orbitIndex: 3,
+    orbitTier: 'Orbit IV • DevOps & Contracts',
+    angleOffset: Math.PI / 2 + (2 * Math.PI) / 3, // 210 deg
+    speed: 0.0022,
+    iconRenderer: (s) => <GitIcon size={s} />,
+  },
+  {
+    id: 'rest',
+    name: 'REST APIs',
+    shortName: 'REST API',
+    category: 'Architecture',
+    role: 'Stateless Service Contracts',
+    description: 'Strict HTTP specifications, idempotency, standard status codes, payload validation, pagination standards, and comprehensive OpenAPI documentation.',
+    color: '#4ADE80',
+    glow: 'rgba(74, 222, 128, 0.45)',
+    orbitIndex: 3,
+    orbitTier: 'Orbit IV • DevOps & Contracts',
+    angleOffset: Math.PI / 2 + (4 * Math.PI) / 3, // 330 deg
+    speed: 0.0022,
+    iconRenderer: (s) => <RestApiIcon size={s} />,
+  },
 ];
+
+// Helper to compute responsive orbit radii based on canvas size
+const getOrbitRadii = (orbitIdx: number, width: number, height: number) => {
+  const isMobile = width < 640;
+  const isTablet = width < 1024;
+
+  const maxRx = Math.min((width - (isMobile ? 50 : 80)) / 2, 430);
+  const maxRy = Math.min((height - (isMobile ? 60 : 90)) / 2, 245);
+  const minRx = isMobile ? 62 : isTablet ? 90 : 118;
+  const minRy = isMobile ? 44 : isTablet ? 62 : 80;
+
+  const t = orbitIdx / 3; // 0, 1/3, 2/3, 1
+  const rx = minRx + t * (maxRx - minRx);
+  const ry = minRy + t * (maxRy - minRy);
+  return { rx, ry };
+};
 
 export const InteractiveTechSpace: React.FC = () => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [nodes, setNodes] = useState<FloatingNode[]>([]);
-  const [hoveredNode, setHoveredNode] = useState<FloatingNode | null>(null);
-  const [gravityMode, setGravityMode] = useState<'drift' | 'vortex' | 'repel'>('drift');
+  const planetRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const draggedNodeRef = useRef<{ id: string; offsetX: number; offsetY: number } | null>(null);
-  const mousePosRef = useRef<{ x: number; y: number; isInside: boolean }>({ x: -1000, y: -1000, isInside: false });
-  const nodesRef = useRef<FloatingNode[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
+  const [isAligning, setIsAligning] = useState<boolean>(false);
+  const [isPulsing, setIsPulsing] = useState<boolean>(false);
+  const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
+    width: 800,
+    height: 560,
+  });
 
-  // Initialize node positions across space
+  const anglesRef = useRef<number[]>(PLANETARY_NODES.map((p) => p.angleOffset));
+  const speedMultiplierRef = useRef<number>(1);
+  const isAligningRef = useRef<boolean>(false);
+  const dimensionsRef = useRef<{ width: number; height: number }>({ width: 800, height: 560 });
+  const lastTimeRef = useRef<number>(performance.now());
+  const selectedIdRef = useRef<string | null>(null);
+
+  // Sync state to refs for high-performance animation loop
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    speedMultiplierRef.current = speedMultiplier;
+  }, [speedMultiplier]);
 
-    const rect = container.getBoundingClientRect();
-    const width = rect.width || window.innerWidth;
-    const height = 480;
+  useEffect(() => {
+    isAligningRef.current = isAligning;
+  }, [isAligning]);
 
-    const initial: FloatingNode[] = INITIAL_NODES.map((item, i) => {
-      // Distribute evenly with orbital spacing
-      const angle = (i / INITIAL_NODES.length) * Math.PI * 2;
-      const radiusDist = Math.min(width, height) * 0.35 * (0.6 + (i % 3) * 0.2);
-      const cx = width / 2;
-      const cy = height / 2;
+  useEffect(() => {
+    dimensionsRef.current = dimensions;
+  }, [dimensions]);
 
-      return {
-        ...item,
-        x: cx + Math.cos(angle) * radiusDist + (Math.random() - 0.5) * 60,
-        y: cy + Math.sin(angle) * radiusDist + (Math.random() - 0.5) * 40,
-        vx: (Math.random() - 0.5) * 0.9,
-        vy: (Math.random() - 0.5) * 0.9,
-        radius: 36,
-        mass: 1.2,
-        rotation: (Math.random() - 0.5) * 15,
-        vRot: (Math.random() - 0.5) * 0.4,
-        isDragging: false,
-      };
-    });
+  useEffect(() => {
+    selectedIdRef.current = selectedId;
+  }, [selectedId]);
 
-    nodesRef.current = initial;
-    setNodes(initial);
+  // Window resize observer to adapt orbit dimensions dynamically
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const width = rect.width || window.innerWidth;
+        const height = rect.height || 560;
+        setDimensions({ width, height });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  // Main 60 FPS Physics Simulation Loop
+  // Keyboard shortcut: Escape clears centered node
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSelectedId(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // 60 FPS Celestial Orbital Simulation Loop (Keplerian Planetary Mechanics)
   useEffect(() => {
     let animId: number;
 
-    const updatePhysics = () => {
-      const container = containerRef.current;
-      if (!container) return;
+    const tick = (currentTime: number) => {
+      const dt = Math.min((currentTime - lastTimeRef.current) / 1000, 0.1);
+      lastTimeRef.current = currentTime;
 
-      const rect = container.getBoundingClientRect();
-      const width = rect.width;
-      const height = rect.height || 480;
-      const mouse = mousePosRef.current;
-      const mode = gravityMode;
-      const dragged = draggedNodeRef.current;
+      const speed = speedMultiplierRef.current;
+      const aligning = isAligningRef.current;
+      const currentSelected = selectedIdRef.current;
+      const { width, height } = dimensionsRef.current;
+      const cx = width / 2;
+      const cy = height / 2;
+      const isMobile = width < 640;
 
-      const current = nodesRef.current.map((node) => {
-        if (dragged && dragged.id === node.id) {
-          // Handled in mousemove
-          return node;
+      PLANETARY_NODES.forEach((planet, i) => {
+        const el = planetRefs.current[i];
+        if (!el) return;
+
+        // When a node is selected, it displays in the center, so hide its orbiting duplicate
+        if (currentSelected === planet.id) {
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          return;
         }
 
-        let { x, y, vx, vy, rotation, vRot, radius } = node;
+        // Restore visibility for orbiting planets
+        el.style.pointerEvents = 'auto';
 
-        // 1. Vortex Gravity: pull towards center in spiral
-        if (mode === 'vortex') {
-          const cx = width / 2;
-          const cy = height / 2;
-          const dx = cx - x;
-          const dy = cy - y;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-
-          // Tangential spiral force
-          const tangentX = -dy / dist;
-          const tangentY = dx / dist;
-
-          vx += (dx / dist) * 0.18 + tangentX * 0.45;
-          vy += (dy / dist) * 0.18 + tangentY * 0.45;
+        // Update planetary angle
+        if (aligning) {
+          // Smoothly pull angle toward 0 rad for cosmic syzygy
+          let current = anglesRef.current[i];
+          let diff = 0 - current;
+          while (diff < -Math.PI) diff += Math.PI * 2;
+          while (diff > Math.PI) diff -= Math.PI * 2;
+          anglesRef.current[i] = current + diff * 0.08;
+        } else if (speed > 0) {
+          anglesRef.current[i] =
+            (anglesRef.current[i] + planet.speed * speed * (dt * 60)) % (Math.PI * 2);
         }
 
-        // 2. Mouse Repulsion / Gravity
-        if (mouse.isInside) {
-          const dx = x - mouse.x;
-          const dy = y - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+        const angle = anglesRef.current[i];
+        const { rx, ry } = getOrbitRadii(planet.orbitIndex, width, height);
 
-          if (dist < 150 && dist > 1) {
-            const force = (150 - dist) / 150;
-            const push = mode === 'repel' ? 1.6 : 0.8;
-            vx += (dx / dist) * force * push;
-            vy += (dy / dist) * force * push;
-          }
-        }
+        const x = cx + rx * Math.cos(angle);
+        const y = cy + ry * Math.sin(angle);
 
-        // 3. Natural Damping (Friction)
-        vx *= 0.985;
-        vy *= 0.985;
+        // 3D pseudo-depth perspective based on upper vs lower orbital hemisphere
+        const isBack = y < cy;
+        const depthScale = isBack ? 0.92 : 1.05;
+        const depthOpacity = isBack ? 0.85 : 1.0;
+        const zIndex = isBack ? 10 : 25;
 
-        // 4. Update Position
-        x += vx;
-        y += vy;
-        rotation += vRot;
+        // Visual radius of the planet card
+        const elRadius = isMobile ? 24 : 32;
 
-        // 5. Boundary Bouncing
-        const padding = radius + 10;
-        if (x < padding) {
-          x = padding;
-          vx = Math.abs(vx) * 0.8;
-        } else if (x > width - padding) {
-          x = width - padding;
-          vx = -Math.abs(vx) * 0.8;
-        }
-
-        if (y < padding) {
-          y = padding;
-          vy = Math.abs(vy) * 0.8;
-        } else if (y > height - padding) {
-          y = height - padding;
-          vy = -Math.abs(vy) * 0.8;
-        }
-
-        return { ...node, x, y, vx, vy, rotation };
+        el.style.transform = `translate3d(${x - elRadius}px, ${y - elRadius}px, 0px) scale(${depthScale})`;
+        el.style.zIndex = `${zIndex}`;
+        el.style.opacity = `${depthOpacity}`;
       });
 
-      // Simple node-to-node soft repulsion to prevent overlap
-      for (let i = 0; i < current.length; i++) {
-        for (let j = i + 1; j < current.length; j++) {
-          const n1 = current[i];
-          const n2 = current[j];
-          const dx = n2.x - n1.x;
-          const dy = n2.y - n1.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const minDist = n1.radius + n2.radius + 15;
-
-          if (dist < minDist && dist > 0) {
-            const overlap = (minDist - dist) * 0.04;
-            const nx = dx / dist;
-            const ny = dy / dist;
-
-            if (!dragged || dragged.id !== n1.id) {
-              n1.x -= nx * overlap;
-              n1.y -= ny * overlap;
-            }
-            if (!dragged || dragged.id !== n2.id) {
-              n2.x += nx * overlap;
-              n2.y += ny * overlap;
-            }
-          }
-        }
-      }
-
-      nodesRef.current = current;
-      setNodes([...current]);
-
-      animId = requestAnimationFrame(updatePhysics);
+      animId = requestAnimationFrame(tick);
     };
 
-    animId = requestAnimationFrame(updatePhysics);
+    animId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animId);
-  }, [gravityMode]);
+  }, []);
 
-  // Handle Drag & Throw Interactivity (Mouse)
-  const handleMouseDown = (e: React.MouseEvent, node: FloatingNode) => {
-    e.stopPropagation();
+  // Click on a planet node: docks in center; if already centered, returns to orbit
+  const handleSelectPlanet = (id: string) => {
     soundFx.playClick();
-    const container = containerRef.current;
-    if (!container) return;
-
-    const rect = container.getBoundingClientRect();
-    draggedNodeRef.current = {
-      id: node.id,
-      offsetX: e.clientX - rect.left - node.x,
-      offsetY: e.clientY - rect.top - node.y,
-    };
+    setSelectedId((prev) => (prev === id ? null : id));
   };
 
-  const handleTouchStart = (e: React.TouchEvent, node: FloatingNode) => {
-    e.stopPropagation();
+  // Planetary Alignment Syzygy (aligns all planets along an orbital ray)
+  const triggerPlanetaryAlignment = () => {
     soundFx.playClick();
-    const container = containerRef.current;
-    if (!container || !e.touches[0]) return;
-
-    const touch = e.touches[0];
-    const rect = container.getBoundingClientRect();
-    draggedNodeRef.current = {
-      id: node.id,
-      offsetX: touch.clientX - rect.left - node.x,
-      offsetY: touch.clientY - rect.top - node.y,
-    };
+    setIsAligning(true);
+    setTimeout(() => {
+      setIsAligning(false);
+    }, 2800);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    mousePosRef.current = { x: mouseX, y: mouseY, isInside: true };
-
-    if (draggedNodeRef.current) {
-      const dragged = draggedNodeRef.current;
-      nodesRef.current = nodesRef.current.map((n) => {
-        if (n.id === dragged.id) {
-          const newX = mouseX - dragged.offsetX;
-          const newY = mouseY - dragged.offsetY;
-          return {
-            ...n,
-            vx: (newX - n.x) * 0.5,
-            vy: (newY - n.y) * 0.5,
-            x: newX,
-            y: newY,
-            isDragging: true,
-          };
-        }
-        return n;
-      });
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    const container = containerRef.current;
-    if (!container || !e.touches[0]) return;
-    const touch = e.touches[0];
-    const rect = container.getBoundingClientRect();
-
-    const touchX = touch.clientX - rect.left;
-    const touchY = touch.clientY - rect.top;
-    mousePosRef.current = { x: touchX, y: touchY, isInside: true };
-
-    if (draggedNodeRef.current) {
-      const dragged = draggedNodeRef.current;
-      nodesRef.current = nodesRef.current.map((n) => {
-        if (n.id === dragged.id) {
-          const newX = touchX - dragged.offsetX;
-          const newY = touchY - dragged.offsetY;
-          return {
-            ...n,
-            vx: (newX - n.x) * 0.5,
-            vy: (newY - n.y) * 0.5,
-            x: newX,
-            y: newY,
-            isDragging: true,
-          };
-        }
-        return n;
-      });
-    }
-  };
-
-  const handleMouseUp = () => {
-    if (draggedNodeRef.current) {
-      soundFx.playHover();
-      draggedNodeRef.current = null;
-      nodesRef.current = nodesRef.current.map((n) => ({ ...n, isDragging: false }));
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (draggedNodeRef.current) {
-      soundFx.playHover();
-      draggedNodeRef.current = null;
-      nodesRef.current = nodesRef.current.map((n) => ({ ...n, isDragging: false }));
-    }
-    mousePosRef.current.isInside = false;
-  };
-
-  const handleMouseLeave = () => {
-    mousePosRef.current.isInside = false;
-    draggedNodeRef.current = null;
-  };
-
-  // Cosmic Shockwave: Explode outward from center
-  const triggerCosmicShockwave = () => {
+  // Solar Shockwave Pulse
+  const triggerSolarPulse = () => {
     soundFx.playSuccess();
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-
-    nodesRef.current = nodesRef.current.map((node) => {
-      const dx = node.x - cx;
-      const dy = node.y - cy;
-      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const angle = Math.atan2(dy, dx);
-      const power = 14 + Math.random() * 8;
-
-      return {
-        ...node,
-        vx: Math.cos(angle) * power,
-        vy: Math.sin(angle) * power,
-        vRot: (Math.random() - 0.5) * 4,
-      };
-    });
+    setIsPulsing(true);
+    setTimeout(() => {
+      setIsPulsing(false);
+    }, 1200);
   };
 
-  // Reset Orbits
-  const resetOrbits = () => {
+  // Reset entire solar system to default state
+  const resetSystem = () => {
     soundFx.playClick();
-    const container = containerRef.current;
-    if (!container) return;
-    const rect = container.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-
-    nodesRef.current = nodesRef.current.map((node, i) => {
-      const angle = (i / nodesRef.current.length) * Math.PI * 2;
-      const radiusDist = Math.min(rect.width, rect.height) * 0.35 * (0.6 + (i % 3) * 0.2);
-      return {
-        ...node,
-        x: cx + Math.cos(angle) * radiusDist,
-        y: cy + Math.sin(angle) * radiusDist,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
-        rotation: 0,
-      };
-    });
+    setSelectedId(null);
+    setSpeedMultiplier(1);
+    setIsAligning(false);
   };
+
+  const selectedNode = PLANETARY_NODES.find((p) => p.id === selectedId) || null;
+  const hoveredNode = PLANETARY_NODES.find((p) => p.id === hoveredId) || null;
+  const isMobile = dimensions.width < 640;
+  const cx = dimensions.width / 2;
+  const cy = dimensions.height / 2;
 
   return (
-    <section className="relative w-full border-b border-zinc-850 bg-[#07060b] overflow-hidden select-none">
-      {/* Background Starfield & Radial Nebula Glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-rose-950/20 via-[#07060b] to-[#050508] pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-rose-600/10 rounded-full blur-[120px] pointer-events-none" />
+    <section
+      id="space"
+      className="relative w-full border-b border-zinc-850 bg-[#07060b] overflow-hidden select-none"
+    >
+      {/* Background Deep Space Starfield & Ambient Nebula */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-rose-950/20 via-[#07060b] to-[#040407] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-rose-600/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-
-      {/* Orbit Rings (Aesthetic SVG Background) */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
-        <ellipse cx="50%" cy="50%" rx="32%" ry="38%" fill="none" stroke="#e84a4a" strokeWidth="1" strokeDasharray="6 8" />
-        <ellipse cx="50%" cy="50%" rx="20%" ry="24%" fill="none" stroke="#ffffff" strokeWidth="0.8" strokeDasharray="3 6" />
-        <ellipse cx="50%" cy="50%" rx="44%" ry="48%" fill="none" stroke="#06b6d4" strokeWidth="0.8" strokeDasharray="4 12" />
-      </svg>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
         {/* Top Control Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800/80">
           <div>
             <div className="flex items-center gap-2 text-rose-500 font-mono text-xs font-bold uppercase tracking-wider">
-              <Radio size={13} className="animate-pulse" />
-              <span>INTERACTIVE TECH COSMOS • ZERO GRAVITY FIELD</span>
+              <Orbit size={14} className="animate-spin [animation-duration:12s]" />
+              <span>SOLAR TECH COSMOS • ORBITAL GRAVITY FIELD</span>
             </div>
             <h3 className="text-white font-extrabold text-xl mt-0.5">
-              Drag, fling & explore the core tech stack.
+              Planetary Tech System — Click any technology to dock in center
             </h3>
           </div>
 
           {/* Interactive Mode Pills */}
           <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-mono">
+            {/* Speed Toggle: Normal / Cosmic / Paused */}
+            <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl p-0.5">
+              <button
+                onClick={() => {
+                  soundFx.playClick();
+                  setSpeedMultiplier(1);
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
+                  speedMultiplier === 1
+                    ? 'bg-rose-600 text-white font-bold'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Normal Orbital Speed"
+              >
+                <Play size={11} /> 1x
+              </button>
+
+              <button
+                onClick={() => {
+                  soundFx.playClick();
+                  setSpeedMultiplier(2);
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
+                  speedMultiplier === 2
+                    ? 'bg-cyan-600 text-white font-bold'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Cosmic 2x Speed"
+              >
+                <Compass size={11} /> 2x
+              </button>
+
+              <button
+                onClick={() => {
+                  soundFx.playClick();
+                  setSpeedMultiplier((prev) => (prev === 0 ? 1 : 0));
+                }}
+                className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
+                  speedMultiplier === 0
+                    ? 'bg-amber-600 text-white font-bold'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title="Pause / Resume Rotation"
+              >
+                <Pause size={11} />
+              </button>
+            </div>
+
+            {/* Planetary Alignment Syzygy */}
             <button
-              onClick={() => {
-                soundFx.playClick();
-                setGravityMode('drift');
-              }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-colors flex items-center gap-1.5 ${
-                gravityMode === 'drift'
-                  ? 'bg-rose-600 text-white font-bold border-rose-500'
-                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
+              onClick={triggerPlanetaryAlignment}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 font-bold ${
+                isAligning
+                  ? 'bg-rose-600 text-white border-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.5)]'
+                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
               }`}
+              title="Align all planets along an orbital ray"
             >
-              <Compass size={12} /> Zero-G
+              <Radio size={12} className={isAligning ? 'animate-pulse' : ''} />
+              <span>Align</span>
             </button>
 
+            {/* Solar Pulse Shockwave */}
             <button
-              onClick={() => {
-                soundFx.playClick();
-                setGravityMode(gravityMode === 'vortex' ? 'drift' : 'vortex');
-              }}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-colors flex items-center gap-1.5 ${
-                gravityMode === 'vortex'
-                  ? 'bg-cyan-600 text-white font-bold border-cyan-500'
-                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
+              onClick={triggerSolarPulse}
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 font-bold ${
+                isPulsing
+                  ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)]'
+                  : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
               }`}
+              title="Trigger Solar Corona Shockwave"
             >
-              <Radio size={12} /> Vortex
+              <Zap size={12} className="fill-current" />
+              <span>Pulse</span>
             </button>
 
+            {/* Reset System */}
             <button
-              onClick={triggerCosmicShockwave}
-              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 transition-all font-bold"
-              title="Cosmic Shockwave Pulse"
-            >
-              <Zap size={12} className="fill-current" /> Pulse
-            </button>
-
-            <button
-              onClick={resetOrbits}
+              onClick={resetSystem}
               className="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
-              title="Reset Orbits"
+              title="Reset Orbits & Deselect Center"
             >
               <RotateCcw size={14} />
             </button>
           </div>
         </div>
 
-        {/* The Zero-G Floating Playground */}
+        {/* The Solar System Canvas Field */}
         <div
           ref={containerRef}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseLeave}
-          onTouchMove={handleTouchMove}
-          onTouchEnd={handleTouchEnd}
-          className="relative w-full h-[440px] sm:h-[480px] rounded-2xl cursor-grab active:cursor-grabbing overflow-hidden touch-none"
+          onClick={() => {
+            // Clicking empty canvas space deselects centered node
+            if (selectedId) {
+              soundFx.playClick();
+              setSelectedId(null);
+            }
+          }}
+          className="relative w-full h-[520px] sm:h-[580px] lg:h-[620px] rounded-2xl overflow-hidden cursor-crosshair touch-none select-none"
         >
-          {/* Constellation Connector Lines to nearby floating nodes */}
+          {/* SVG Layer: Orbital Tracks, Glow Effects, and Alignments */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            {nodes.map((n1, i) =>
-              nodes.slice(i + 1).map((n2) => {
-                const dx = n2.x - n1.x;
-                const dy = n2.y - n1.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 130) {
-                  const alpha = (1 - dist / 130) * 0.25;
-                  return (
-                    <line
-                      key={`${n1.id}-${n2.id}`}
-                      x1={n1.x}
-                      y1={n1.y}
-                      x2={n2.x}
-                      y2={n2.y}
-                      stroke={n1.color}
-                      strokeWidth="1"
-                      strokeOpacity={alpha}
+            {/* Concentric Elliptical Orbit Rings */}
+            {[0, 1, 2, 3].map((orbitIdx) => {
+              const { rx, ry } = getOrbitRadii(orbitIdx, dimensions.width, dimensions.height);
+              const isContainingSelected = selectedNode && selectedNode.orbitIndex === orbitIdx;
+              const isContainingHovered = hoveredNode && hoveredNode.orbitIndex === orbitIdx;
+
+              return (
+                <g key={orbitIdx}>
+                  {/* Glowing orbital trail when hovered or selected */}
+                  {(isContainingSelected || isContainingHovered) && (
+                    <ellipse
+                      cx={cx}
+                      cy={cy}
+                      rx={rx}
+                      ry={ry}
+                      fill="none"
+                      stroke={isContainingSelected ? selectedNode.color : hoveredNode?.color}
+                      strokeWidth="2.5"
+                      strokeOpacity="0.45"
+                      className="transition-all duration-300"
                     />
-                  );
-                }
-                return null;
-              })
+                  )}
+
+                  {/* Standard Celestial Dashed Orbit Ring */}
+                  <ellipse
+                    cx={cx}
+                    cy={cy}
+                    rx={rx}
+                    ry={ry}
+                    fill="none"
+                    stroke={isContainingSelected ? selectedNode.color : '#ffffff'}
+                    strokeWidth="1"
+                    strokeDasharray="4 8"
+                    strokeOpacity={isContainingSelected ? 0.6 : 0.12}
+                    className="transition-all duration-300"
+                  />
+                </g>
+              );
+            })}
+
+            {/* Planetary Alignment Ray */}
+            {isAligning && (
+              <line
+                x1={cx}
+                y1={cy}
+                x2={cx + dimensions.width / 2}
+                y2={cy}
+                stroke="#f43f5e"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                className="animate-pulse"
+                strokeOpacity="0.7"
+              />
+            )}
+
+            {/* Solar Shockwave Expanding Ripple */}
+            {isPulsing && (
+              <circle
+                cx={cx}
+                cy={cy}
+                r={dimensions.width * 0.45}
+                fill="none"
+                stroke="#f59e0b"
+                strokeWidth="3"
+                className="animate-ping"
+                strokeOpacity="0.5"
+              />
             )}
           </svg>
 
-          {/* Render Floating Language Icons */}
-          {nodes.map((node) => {
-            const isHovered = hoveredNode?.id === node.id;
+          {/* ============================================================
+              CENTER COMPONENT: The Sun OR The Selected Spotlight Card
+              ============================================================ */}
+          {selectedNode ? (
+            /* CENTER SPOTLIGHT CARD (When an item is clicked) */
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="absolute -translate-x-1/2 -translate-y-1/2 z-40 select-none transition-all duration-300"
+              style={{ left: `${cx}px`, top: `${cy}px` }}
+            >
+              {/* Giant ambient radial glow of this tech's brand color */}
+              <div
+                className="absolute -inset-10 rounded-full blur-2xl opacity-60 pointer-events-none transition-all duration-500"
+                style={{ background: selectedNode.glow }}
+              />
+
+              {/* Orbiting dashed aura ring */}
+              <div
+                className="absolute -inset-4 sm:-inset-6 rounded-3xl border border-dashed animate-spin [animation-duration:24s] pointer-events-none"
+                style={{ borderColor: selectedNode.color, opacity: 0.35 }}
+              />
+
+              {/* The Spotlight Card */}
+              <div
+                className="relative w-[280px] sm:w-[340px] md:w-[380px] rounded-2xl bg-[#0c0b16]/95 border border-white/20 p-4 sm:p-5 shadow-2xl backdrop-blur-xl flex flex-col"
+                style={{
+                  boxShadow: `0 0 50px ${selectedNode.glow}, 0 20px 40px rgba(0,0,0,0.85)`,
+                }}
+              >
+                {/* Header with Large Icon, Title, and Close Button */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center p-2.5 bg-[#161424] border border-white/15 shrink-0 shadow-lg"
+                      style={{ boxShadow: `0 0 24px ${selectedNode.glow}` }}
+                    >
+                      {selectedNode.iconRenderer(isMobile ? 24 : 32)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h4 className="text-white font-extrabold text-base sm:text-lg leading-tight">
+                          {selectedNode.name}
+                        </h4>
+                      </div>
+                      <span className="text-[10px] sm:text-xs font-mono font-semibold text-zinc-400">
+                        {selectedNode.role}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Close button to return to orbit */}
+                  <button
+                    onClick={() => {
+                      soundFx.playClick();
+                      setSelectedId(null);
+                    }}
+                    className="p-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+                    title="Return to Orbit (Esc)"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+
+                {/* Description */}
+                <p className="text-zinc-300 text-xs sm:text-[13px] leading-relaxed mt-3 pt-3 border-t border-zinc-800/80 font-sans">
+                  {selectedNode.description}
+                </p>
+
+                {/* Footer with Tier Badge and Return to Orbit CTA */}
+                <div className="mt-3.5 pt-3 border-t border-zinc-800/80 flex items-center justify-between gap-2 text-[10px] sm:text-xs font-mono">
+                  <div className="flex items-center gap-1.5 text-zinc-400">
+                    <span
+                      className="w-2 h-2 rounded-full animate-ping"
+                      style={{ background: selectedNode.color }}
+                    />
+                    <span className="truncate max-w-[150px]">{selectedNode.orbitTier}</span>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      soundFx.playClick();
+                      setSelectedId(null);
+                    }}
+                    className="px-2.5 py-1 rounded-lg bg-rose-600/90 hover:bg-rose-500 text-white font-bold flex items-center gap-1 transition-all shadow-md active:scale-95"
+                  >
+                    <RotateCcw size={11} /> Return to Orbit
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* CENTRAL SUN / GRAVITATIONAL CORE (When no node is selected) */
+            <div
+              className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center transition-all duration-500 z-20 pointer-events-none select-none"
+              style={{ left: `${cx}px`, top: `${cy}px` }}
+            >
+              {/* Outer Corona Flare Rings */}
+              <div className="absolute w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-amber-500/20 animate-spin [animation-duration:35s]" />
+              <div className="absolute w-28 h-28 sm:w-36 sm:h-36 rounded-full border border-rose-500/30 border-dashed animate-spin [animation-duration:20s] [animation-direction:reverse]" />
+
+              {/* Radiant Sun Corona Glow */}
+              <div className="absolute w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-amber-500/30 via-rose-500/25 to-yellow-400/20 blur-xl animate-pulse" />
+
+              {/* Solar Core Sphere */}
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-400 via-rose-500 to-orange-600 shadow-[0_0_40px_rgba(244,63,94,0.6)] flex flex-col items-center justify-center border border-amber-200/40">
+                <Sun size={isMobile ? 20 : 24} className="text-white animate-pulse" />
+                <span className="text-[7.5px] sm:text-[9px] font-mono font-black tracking-widest text-white uppercase drop-shadow-md mt-0.5">
+                  CORE
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* ============================================================
+              ORBITING PLANETARY NODES (Continuously Revolving Around Center)
+              ============================================================ */}
+          {PLANETARY_NODES.map((planet, index) => {
+            const isHovered = hoveredId === planet.id;
+
             return (
               <div
-                key={node.id}
-                onMouseDown={(e) => handleMouseDown(e, node)}
-                onTouchStart={(e) => handleTouchStart(e, node)}
+                key={planet.id}
+                ref={(el) => {
+                  planetRefs.current[index] = el;
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSelectPlanet(planet.id);
+                }}
                 onMouseEnter={() => {
                   soundFx.playHover();
-                  setHoveredNode(node);
+                  setHoveredId(planet.id);
                 }}
-                onMouseLeave={() => setHoveredNode(null)}
+                onMouseLeave={() => setHoveredId(null)}
                 style={{
-                  transform: `translate3d(${node.x - node.radius}px, ${node.y - node.radius}px, 0px) rotate(${node.rotation}deg) scale(${isHovered ? 1.25 : 1})`,
-                  boxShadow: isHovered ? `0 0 35px ${node.glow}` : `0 0 18px ${node.glow}`,
+                  boxShadow: isHovered
+                    ? `0 0 32px ${planet.glow}`
+                    : `0 0 16px ${planet.glow}`,
                 }}
-                className={`absolute w-16 h-16 sm:w-18 sm:h-18 rounded-2xl p-3 flex flex-col items-center justify-center bg-[#100f18]/90 border border-white/20 backdrop-blur-md shadow-2xl transition-transform duration-100 cursor-pointer ${
-                  node.isDragging ? 'scale-125 z-40 border-white' : 'z-20'
+                className={`absolute w-12 h-12 sm:w-16 sm:h-16 rounded-2xl p-2 sm:p-2.5 flex flex-col items-center justify-center bg-[#0d0c16]/90 border transition-all duration-150 cursor-pointer ${
+                  isHovered ? 'border-white scale-110 z-30' : 'border-white/15'
                 }`}
               >
                 {/* Brand Icon */}
-                <div className="shrink-0 drop-shadow-md">{node.icon}</div>
+                <div className="shrink-0 drop-shadow-md">
+                  {planet.iconRenderer(isMobile ? 20 : 28)}
+                </div>
 
                 {/* Subtitle Badge */}
-                <span className="text-[8px] font-mono font-bold tracking-tight text-zinc-300 mt-1 truncate max-w-[56px]">
-                  {node.name.split(' ')[0]}
+                <span className="text-[7.5px] sm:text-[9px] font-mono font-bold tracking-tight text-zinc-300 mt-1 truncate max-w-[46px] sm:max-w-[58px]">
+                  {planet.shortName}
                 </span>
               </div>
             );
           })}
 
-          {/* Active Hover Hologram HUD */}
-          {hoveredNode && (
+          {/* Active Hover Hologram HUD Tooltip */}
+          {hoveredNode && hoveredNode.id !== selectedId && (
             <div
-              className="absolute pointer-events-none z-50 p-4 rounded-xl bg-[#12111c]/95 border border-white/20 shadow-2xl backdrop-blur-xl max-w-xs transition-opacity duration-150 animate-fadeIn"
+              className="absolute pointer-events-none z-50 p-3 sm:p-3.5 rounded-xl bg-[#12111c]/95 border border-white/20 shadow-2xl backdrop-blur-xl max-w-xs transition-opacity duration-150"
               style={{
-                left: Math.min(Math.max(hoveredNode.x - 120, 20), (containerRef.current?.clientWidth || 800) - 260),
-                top: Math.max(hoveredNode.y - 120, 20),
+                left: Math.min(
+                  Math.max(cx - 100, 20),
+                  dimensions.width - (isMobile ? 220 : 280)
+                ),
+                top: 20,
               }}
             >
               <div className="flex items-center gap-2 mb-1">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ background: hoveredNode.color }} />
-                <span className="text-white font-bold text-sm">{hoveredNode.name}</span>
-                <span className="ml-auto text-[9px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ background: hoveredNode.color }}
+                />
+                <span className="text-white font-bold text-xs sm:text-sm">
+                  {hoveredNode.name}
+                </span>
+                <span className="ml-auto text-[8.5px] sm:text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
                   {hoveredNode.category}
                 </span>
               </div>
 
-              <div className="text-xs text-zinc-300 font-mono font-semibold mb-1">
+              <div className="text-[11px] sm:text-xs text-zinc-300 font-mono font-semibold mb-1">
                 {hoveredNode.role}
               </div>
 
-              <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-1.5 border-t border-zinc-800">
-                <span>Drag & Toss Across Space</span>
-                <span className="text-rose-400 font-bold">● Active Orbit</span>
+              <div className="flex items-center justify-between text-[9.5px] sm:text-[10px] font-mono text-zinc-400 pt-1.5 border-t border-zinc-800">
+                <span className="text-rose-400 font-bold">● Click to center</span>
+                <span>{hoveredNode.orbitTier}</span>
               </div>
             </div>
           )}
-
-          {/* Floating Helper Pill */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-[10px] sm:text-[11px] font-mono text-zinc-400 flex items-center gap-1.5 sm:gap-2 pointer-events-none max-w-[90%] text-center">
-            <Move size={12} className="text-rose-400 shrink-0" />
-            <span className="truncate sm:whitespace-normal">Click & drag icons to fling in zero gravity</span>
-          </div>
         </div>
       </div>
     </section>
   );
 };
-
