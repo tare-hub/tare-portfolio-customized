@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { AccentTheme } from '../../types';
-import { Volume2, VolumeX, Terminal, Palette, Menu, X, ArrowUpRight, Sparkles, Keyboard } from 'lucide-react';
+import { Terminal, Palette, Menu, X, ArrowUpRight, Sparkles, Keyboard } from 'lucide-react';
 import { soundFx } from '../../utils/audio';
 
 interface HeaderProps {
@@ -27,7 +27,6 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenShortcuts,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(false);
   const [ethiopiaTime, setEthiopiaTime] = useState('');
 
   // Real-time clock for Addis Ababa, Ethiopia (UTC+3)
@@ -48,12 +47,6 @@ export const Header: React.FC<HeaderProps> = ({
     const interval = setInterval(updateTime, 1000);
     return () => clearInterval(interval);
   }, []);
-
-  const toggleSound = () => {
-    const next = !soundEnabled;
-    setSoundEnabled(next);
-    soundFx.setEnabled(next);
-  };
 
   const handleNavClick = () => {
     soundFx.playClick();
@@ -157,30 +150,6 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden lg:inline text-[10px] text-zinc-500 bg-zinc-800 px-1 rounded">
               ^K
             </span>
-          </button>
-
-          {/* Sound FX Toggle with Animated Equalizer */}
-          <button
-            onClick={toggleSound}
-            className={`p-2 rounded-lg border transition-all text-xs flex items-center gap-1.5 ${
-              soundEnabled
-                ? 'bg-rose-500/10 border-rose-500/50 text-rose-400 shadow-md shadow-rose-950/20'
-                : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300'
-            }`}
-            title={soundEnabled ? 'Mute Sound FX' : 'Enable Futuristic Sound FX'}
-          >
-            {soundEnabled ? (
-              <>
-                <Volume2 size={16} />
-                <span className="hidden sm:flex items-end gap-0.5 h-3">
-                  <span className="w-0.5 h-2.5 bg-rose-500 rounded-full animate-pulse" />
-                  <span className="w-0.5 h-3 bg-rose-400 rounded-full animate-pulse [animation-delay:150ms]" />
-                  <span className="w-0.5 h-1.5 bg-rose-500 rounded-full animate-pulse [animation-delay:300ms]" />
-                </span>
-              </>
-            ) : (
-              <VolumeX size={16} />
-            )}
           </button>
 
           {/* Keyboard Shortcuts Cheatsheet Trigger */}

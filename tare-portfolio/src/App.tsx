@@ -71,15 +71,6 @@ export const App: React.FC = () => {
         });
       }
 
-      // Audio Toggle: 'M'
-      if (e.key.toLowerCase() === 'm' && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        e.preventDefault();
-        const next = !soundFx.enabled;
-        soundFx.setEnabled(next);
-        setToastMessage(next ? 'Sound FX: ON' : 'Sound FX: MUTED');
-        if (next) soundFx.playSuccess();
-      }
-
       // Resume CV: 'R'
       if (e.key.toLowerCase() === 'r' && !e.ctrlKey && !e.metaKey && !e.altKey) {
         e.preventDefault();

@@ -47,11 +47,6 @@ export const Hero: React.FC<HeroProps> = ({
               </h1>
             </div>
 
-            {/* Description */}
-            <p className="text-zinc-400 text-base sm:text-lg max-w-xl leading-relaxed">
-              Full-Stack Web Developer focused on building clean, useful, and engaging web applications — from thoughtful, accessible interfaces in Vue and React to bulletproof, scalable backends in Laravel and MySQL.
-            </p>
-
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-4 pt-1">
               <a

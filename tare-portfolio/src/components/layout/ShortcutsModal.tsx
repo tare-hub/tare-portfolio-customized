@@ -9,7 +9,6 @@ interface ShortcutsModalProps {
 const SHORTCUTS = [
   { keys: ['Ctrl', 'K'], desc: 'Open Interactive Developer CLI / Command Palette' },
   { keys: ['T'], desc: 'Quick cycle accent theme (Crimson, Cyan, Emerald, etc.)' },
-  { keys: ['M'], desc: 'Toggle Web Audio sound effects & ambient soundscape' },
   { keys: ['R'], desc: 'Open formatted Curriculum Vitae / Resume' },
   { keys: ['X'], desc: 'Toggle Cyber Matrix Digital Rain mode' },
   { keys: ['C'], desc: 'Jump to 3D Developer Photo Cube' },

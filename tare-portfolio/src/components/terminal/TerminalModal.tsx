@@ -87,7 +87,6 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({
               <div><span className="text-amber-400 font-bold">space</span>: Launch Zero-Gravity Tech Cosmos</div>
               <div><span className="text-amber-400 font-bold">contact</span>: Contact channels & direct email</div>
               <div><span className="text-amber-400 font-bold">theme [color]</span>: crimson | cyan | emerald | purple | amber</div>
-              <div><span className="text-amber-400 font-bold">sound [on|off]</span>: Toggle audio synthesizer</div>
               <div><span className="text-amber-400 font-bold">vcard</span>: Download digital contact card</div>
               <div><span className="text-amber-400 font-bold">sudo hire</span>: Recruiter instant action</div>
               <div><span className="text-amber-400 font-bold">clear</span>: Clear terminal window</div>
@@ -172,18 +171,6 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({
           } else {
             newLogs.push({ type: 'error', text: `Unknown theme '${args[0]}'. Choose from: crimson, cyan, emerald, purple, amber` });
           }
-        }
-        break;
-
-      case 'sound':
-        if (args[0] === 'on') {
-          soundFx.setEnabled(true);
-          newLogs.push({ type: 'success', text: 'Audio synthesizer enabled.' });
-        } else if (args[0] === 'off') {
-          soundFx.setEnabled(false);
-          newLogs.push({ type: 'output', text: 'Audio synthesizer muted.' });
-        } else {
-          newLogs.push({ type: 'output', text: `Sound is currently: ${soundFx.enabled ? 'ON' : 'OFF'}. Use 'sound on' or 'sound off'.` });
         }
         break;
 
