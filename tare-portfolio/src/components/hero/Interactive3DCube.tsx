@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { soundFx } from '../../utils/audio';
-import { Move, RotateCcw, Cpu, Globe, ShieldCheck, Activity, Briefcase, Sparkles } from 'lucide-react';
+import { Cpu, Globe, ShieldCheck, Activity, Briefcase, Sparkles } from 'lucide-react';
 
 const CUBE_SIZE = 190; // 190px cube
 const HALF_SIZE = CUBE_SIZE / 2; // 95px
@@ -73,13 +73,6 @@ export const Interactive3DCube: React.FC = () => {
     isDraggingRef.current = true;
     setIsDragging(true);
     lastPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
-  };
-
-  // Reset to default angle
-  const handleReset = () => {
-    soundFx.playClick();
-    setRotX(INITIAL_ROT_X);
-    setRotY(INITIAL_ROT_Y);
   };
 
   return (
@@ -402,56 +395,6 @@ export const Interactive3DCube: React.FC = () => {
         </div>
       </div>
 
-      {/* Helper Pill & Reset Control */}
-      <div className="flex flex-col items-center gap-2 -mt-3">
-        <div className="flex items-center gap-2.5">
-          {/* Drag Hint Pill */}
-          <div
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-[11px] font-mono transition-all ${
-              isDragging
-                ? 'bg-rose-950/80 border-rose-500/80 text-rose-300 scale-105 shadow-md shadow-rose-950/60'
-                : 'bg-zinc-900/90 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700'
-            }`}
-          >
-            <Move size={12} className={`${isDragging ? 'text-rose-400' : 'text-rose-500'}`} />
-            <span>{isDragging ? 'ROTATING 3D CUBE...' : 'DRAG TO ROTATE SIDES'}</span>
-          </div>
-
-          {/* Reset Orientation Button */}
-          <button
-            onClick={handleReset}
-            title="Reset cube view to front photo"
-            aria-label="Reset cube view to front photo"
-            className="p-2 rounded-full bg-zinc-900/90 border border-zinc-800 text-zinc-400 hover:text-rose-400 hover:border-rose-500/50 hover:scale-110 active:scale-95 transition-all"
-          >
-            <RotateCcw size={12} />
-          </button>
-        </div>
-
-        {/* Quick Face Presets */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1">
-          {[
-            { label: 'Photo', x: INITIAL_ROT_X, y: INITIAL_ROT_Y, color: 'hover:text-rose-400 hover:border-rose-500/50' },
-            { label: 'Stack', x: 0, y: 180, color: 'hover:text-cyan-400 hover:border-cyan-500/50' },
-            { label: 'Roots', x: 0, y: -90, color: 'hover:text-emerald-400 hover:border-emerald-500/50' },
-            { label: 'Standards', x: 0, y: 90, color: 'hover:text-amber-400 hover:border-amber-500/50' },
-            { label: 'Metrics', x: -90, y: 0, color: 'hover:text-red-400 hover:border-red-500/50' },
-            { label: 'Contact', x: 90, y: 0, color: 'hover:text-purple-400 hover:border-purple-500/50' },
-          ].map((preset) => (
-            <button
-              key={preset.label}
-              onClick={() => {
-                soundFx.playClick();
-                setRotX(preset.x);
-                setRotY(preset.y);
-              }}
-              className={`px-2 py-0.5 rounded-md bg-zinc-900/80 border border-zinc-800/80 text-[9px] font-mono text-zinc-400 ${preset.color} hover:bg-zinc-800 transition-all`}
-            >
-              {preset.label}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
