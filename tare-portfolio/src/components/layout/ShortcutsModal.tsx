@@ -26,13 +26,13 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ isOpen, onClose 
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg bg-[#0e0d16] border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden"
+        className="w-full max-w-lg bg-[#0e0d16] border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-5 py-4 bg-[#14121e] border-b border-zinc-800">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-[#14121e] border-b border-zinc-800">
           <div className="flex items-center gap-2.5 text-xs font-mono text-zinc-300">
             <Keyboard size={16} className="text-rose-500" />
-            <span className="font-bold text-white">KEYBOARD SHORTCUTS CHEATSHEET</span>
+            <span className="font-bold text-white">KEYBOARD SHORTCUTS</span>
           </div>
 
           <button
@@ -43,7 +43,7 @@ export const ShortcutsModal: React.FC<ShortcutsModalProps> = ({ isOpen, onClose 
           </button>
         </div>
 
-        <div className="p-5 space-y-2.5 font-mono text-xs">
+        <div className="p-3 sm:p-5 space-y-2 sm:space-y-2.5 font-mono text-xs overflow-y-auto">
           {SHORTCUTS.map((item, i) => (
             <div
               key={i}

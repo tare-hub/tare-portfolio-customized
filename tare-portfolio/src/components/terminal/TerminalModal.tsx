@@ -348,20 +348,21 @@ export const TerminalModal: React.FC<TerminalModalProps> = ({
         </div>
 
         {/* Terminal Input Bar */}
-        <div className="flex items-center gap-2 px-4 py-3 bg-[#100f16] border-t border-zinc-800">
-          <span className="text-emerald-400 font-mono text-xs">tare@work:~$</span>
+        <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 bg-[#100f16] border-t border-zinc-800">
+          <span className="text-emerald-400 font-mono text-xs hidden sm:inline">tare@work:~$</span>
+          <span className="text-emerald-400 font-mono text-xs sm:hidden">$</span>
           <input
             ref={inputRef}
             type="text"
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Type 'help', 'skills', 'projects', 'sudo hire'..."
-            className="flex-1 bg-transparent border-0 outline-none font-mono text-xs text-white placeholder-zinc-600 focus:ring-0"
+            placeholder="Type 'help', 'skills', 'projects'..."
+            className="flex-1 bg-transparent border-0 outline-none font-mono text-xs text-white placeholder-zinc-600 focus:ring-0 min-w-0"
           />
           <button
             onClick={() => handleCommand(inputVal)}
-            className="p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors"
+            className="p-1.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-colors shrink-0"
             title="Execute"
           >
             <CornerDownLeft size={14} />

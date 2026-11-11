@@ -40,7 +40,7 @@ export const Hero: React.FC<HeroProps> = ({
                 <span className="text-zinc-600">✳</span>
                 <span className="text-zinc-400">TARIKU MESERET</span>
               </p>
-              <h1 className="text-4xl sm:text-6xl xl:text-7xl font-extrabold tracking-tight text-white leading-[1.08]">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl xl:text-7xl font-extrabold tracking-tight text-white leading-[1.12] sm:leading-[1.08]">
                 I build <br />
                 <DynamicTextScrambler /> <br />
                 that make an impact.
@@ -48,11 +48,11 @@ export const Hero: React.FC<HeroProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-1">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-1">
               <a
                 href="#projects"
                 onClick={() => soundFx.playClick()}
-                className="px-6 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold tracking-wider flex items-center gap-2 shadow-xl shadow-rose-950/50 hover:scale-105 active:scale-95 transition-all"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold tracking-wider flex items-center justify-center gap-2 shadow-xl shadow-rose-950/50 hover:scale-105 active:scale-95 transition-all text-center"
               >
                 <span>EXPLORE MY WORK</span>
                 <ArrowDownRight size={16} />
@@ -61,7 +61,7 @@ export const Hero: React.FC<HeroProps> = ({
               <a
                 href="#contact"
                 onClick={() => soundFx.playClick()}
-                className="px-6 py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs font-bold tracking-wider flex items-center gap-2 transition-all"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs font-bold tracking-wider flex items-center justify-center gap-2 transition-all text-center"
               >
                 <span>GET IN TOUCH</span>
                 <ArrowUpRight size={16} />
@@ -80,7 +80,7 @@ export const Hero: React.FC<HeroProps> = ({
             <HeroStatsStrip />
 
             {/* Meta Strip */}
-            <div className="pt-4 border-t border-zinc-800/60 flex flex-wrap items-center gap-6 text-[11px] font-mono text-zinc-500">
+            <div className="pt-4 border-t border-zinc-800/60 flex flex-wrap items-center gap-3 sm:gap-6 text-[10px] sm:text-[11px] font-mono text-zinc-500">
               <div className="flex items-center gap-1.5">
                 <MapPin size={13} className="text-rose-500" />
                 <span>BASED IN ETHIOPIA</span>
@@ -129,7 +129,7 @@ export const Hero: React.FC<HeroProps> = ({
                 <div
                   onClick={() => soundFx.playClick()}
                   onMouseEnter={() => soundFx.playHover()}
-                  className="absolute -bottom-8 -right-3 sm:-right-6 z-20 w-28 sm:w-32 p-2 bg-[#121118]/90 border border-rose-500/40 rounded-xl shadow-2xl backdrop-blur-md transform rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-300 group cursor-pointer"
+                  className="absolute -bottom-6 right-1 sm:-bottom-8 sm:-right-6 z-20 w-24 sm:w-32 p-1.5 sm:p-2 bg-[#121118]/90 border border-rose-500/40 rounded-xl shadow-2xl backdrop-blur-md transform rotate-3 hover:rotate-0 hover:scale-105 transition-all duration-300 group cursor-pointer"
                 >
                   <div className="relative overflow-hidden rounded-lg aspect-square bg-[#1e1a26] border border-zinc-800">
                     <img

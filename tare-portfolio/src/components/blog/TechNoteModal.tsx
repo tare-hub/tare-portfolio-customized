@@ -21,16 +21,16 @@ export const TechNoteModal: React.FC<TechNoteModalProps> = ({ note, onClose }) =
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header */}
-        <div className="p-6 sm:p-8 bg-gradient-to-r from-zinc-900 via-[#161422] to-zinc-900 border-b border-zinc-800 relative">
+        <div className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-zinc-900 via-[#161422] to-zinc-900 border-b border-zinc-800 relative">
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full bg-black/40 text-zinc-400 hover:text-white hover:bg-black/80 transition-colors"
+            className="absolute top-4 sm:top-5 right-4 sm:right-5 p-2 rounded-full bg-black/40 text-zinc-400 hover:text-white hover:bg-black/80 transition-colors"
             title="Close"
           >
             <X size={18} />
           </button>
 
-          <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-zinc-400 mb-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-mono text-zinc-400 mb-2 sm:mb-3">
             <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 font-bold border border-rose-500/40">
               {note.category}
             </span>
@@ -43,11 +43,11 @@ export const TechNoteModal: React.FC<TechNoteModalProps> = ({ note, onClose }) =
             </span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">
             {note.title}
           </h2>
 
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-3 sm:mt-4">
             {note.tags.map((t) => (
               <span
                 key={t}
@@ -60,7 +60,7 @@ export const TechNoteModal: React.FC<TechNoteModalProps> = ({ note, onClose }) =
         </div>
 
         {/* Scrollable Article Body */}
-        <div className="flex-1 p-6 sm:p-8 overflow-y-auto space-y-6 text-zinc-300 font-sans text-sm sm:text-base leading-relaxed">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-4 sm:space-y-6 text-zinc-300 font-sans text-sm sm:text-base leading-relaxed">
           <div className="prose prose-invert max-w-none space-y-4">
             {note.content.split('\n\n').map((paragraph, idx) => {
               // Code block formatting

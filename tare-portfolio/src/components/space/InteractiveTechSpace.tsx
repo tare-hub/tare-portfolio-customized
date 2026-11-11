@@ -401,13 +401,13 @@ export const InteractiveTechSpace: React.FC = () => {
           </div>
 
           {/* Interactive Mode Pills */}
-          <div className="flex items-center gap-2 text-xs font-mono">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-mono">
             <button
               onClick={() => {
                 soundFx.playClick();
                 setGravityMode('drift');
               }}
-              className={`px-3 py-1.5 rounded-xl border transition-colors flex items-center gap-1.5 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-colors flex items-center gap-1.5 ${
                 gravityMode === 'drift'
                   ? 'bg-rose-600 text-white font-bold border-rose-500'
                   : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
@@ -421,7 +421,7 @@ export const InteractiveTechSpace: React.FC = () => {
                 soundFx.playClick();
                 setGravityMode(gravityMode === 'vortex' ? 'drift' : 'vortex');
               }}
-              className={`px-3 py-1.5 rounded-xl border transition-colors flex items-center gap-1.5 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-colors flex items-center gap-1.5 ${
                 gravityMode === 'vortex'
                   ? 'bg-cyan-600 text-white font-bold border-cyan-500'
                   : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white'
@@ -432,7 +432,7 @@ export const InteractiveTechSpace: React.FC = () => {
 
             <button
               onClick={triggerCosmicShockwave}
-              className="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 transition-all font-bold"
+              className="px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 flex items-center gap-1.5 transition-all font-bold"
               title="Cosmic Shockwave Pulse"
             >
               <Zap size={12} className="fill-current" /> Pulse
@@ -546,9 +546,9 @@ export const InteractiveTechSpace: React.FC = () => {
           )}
 
           {/* Floating Helper Pill */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-[11px] font-mono text-zinc-400 flex items-center gap-2 pointer-events-none">
-            <Move size={12} className="text-rose-400" />
-            <span>Click and drag any language icon to fling it in zero gravity</span>
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1.5 rounded-full bg-black/60 border border-white/10 backdrop-blur-md text-[10px] sm:text-[11px] font-mono text-zinc-400 flex items-center gap-1.5 sm:gap-2 pointer-events-none max-w-[90%] text-center">
+            <Move size={12} className="text-rose-400 shrink-0" />
+            <span className="truncate sm:whitespace-normal">Click & drag icons to fling in zero gravity</span>
           </div>
         </div>
       </div>

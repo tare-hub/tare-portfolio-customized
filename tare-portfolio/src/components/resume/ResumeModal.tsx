@@ -27,34 +27,42 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Control Bar */}
-        <div className="flex items-center justify-between px-6 py-4 bg-[#14121d] border-b border-zinc-800">
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-            <span className="text-white font-bold">TARIKU MESERET — CURRICULUM VITAE</span>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 px-4 sm:px-6 py-3 sm:py-4 bg-[#14121d] border-b border-zinc-800">
+          <div className="flex items-center justify-between sm:justify-start gap-2 text-xs font-mono text-zinc-400">
+            <div className="flex items-center gap-2 truncate">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0" />
+              <span className="text-white font-bold truncate">TARIKU MESERET — CV</span>
+            </div>
+            <button
+              onClick={onClose}
+              className="sm:hidden p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+            >
+              <X size={16} />
+            </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-end gap-2">
             <button
               onClick={handlePrint}
-              className="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-mono text-zinc-200 hover:text-white flex items-center gap-1.5 transition-colors"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-mono text-zinc-200 hover:text-white flex items-center gap-1.5 transition-colors"
               title="Print or Save as PDF"
             >
               <Printer size={13} />
-              <span>Print / PDF</span>
+              <span className="hidden xs:inline">Print / PDF</span>
             </button>
             <button
               onClick={() => {
                 soundFx.playClick();
                 downloadVCard();
               }}
-              className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-xs font-mono text-white flex items-center gap-1.5 font-bold transition-colors"
+              className="px-2.5 sm:px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-xs font-mono text-white flex items-center gap-1.5 font-bold transition-colors"
             >
               <Download size={13} />
               <span>vCard</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
+              className="hidden sm:inline-flex p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition-colors"
             >
               <X size={16} />
             </button>
@@ -62,7 +70,7 @@ export const ResumeModal: React.FC<ResumeModalProps> = ({ isOpen, onClose }) => 
         </div>
 
         {/* CV Document Container */}
-        <div className="flex-1 p-6 sm:p-10 overflow-y-auto space-y-8 bg-[#09080e] text-zinc-300 font-sans print:p-0 print:bg-white print:text-black">
+        <div className="flex-1 p-4 sm:p-6 lg:p-10 overflow-y-auto space-y-6 sm:space-y-8 bg-[#09080e] text-zinc-300 font-sans print:p-0 print:bg-white print:text-black">
           {/* Header */}
           <div className="border-b border-zinc-800 pb-6 space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

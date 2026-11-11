@@ -89,7 +89,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onShowToast }) =
               HAVE AN IDEA? LET'S BUILD IT.
             </p>
 
-            <h2 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
               Let's make <br />
               something <br />
               <span className="text-rose-500">meaningful.</span>
@@ -116,7 +116,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onShowToast }) =
                 </a>
                 <button
                   onClick={handleCopyEmail}
-                  className="px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-mono flex items-center justify-center gap-1.5 transition-colors shrink-0"
+                  className="w-full sm:w-auto px-3.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-mono flex items-center justify-center gap-1.5 transition-colors shrink-0"
                 >
                   {copiedEmail ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
                   <span>{copiedEmail ? 'Copied' : 'Copy Email'}</span>
@@ -125,10 +125,10 @@ export const ContactSection: React.FC<ContactSectionProps> = ({ onShowToast }) =
             </div>
 
             {/* Quick Action Buttons */}
-            <div className="flex flex-wrap gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <button
                 onClick={handleDownloadVCard}
-                className="px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs flex items-center gap-2 transition-colors"
+                className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs flex items-center gap-2 transition-colors text-center"
               >
                 <Download size={14} className="text-rose-400" />
                 <span>Save Contact (vCard)</span>

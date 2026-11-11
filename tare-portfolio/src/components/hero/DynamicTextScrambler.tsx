@@ -74,7 +74,7 @@ export const DynamicTextScrambler: React.FC = () => {
       onClick={nextWord}
       onMouseEnter={() => soundFx.playHover()}
       title="Click to cycle engineering focus"
-      className="inline-flex items-center gap-1.5 cursor-pointer text-rose-500 hover:text-rose-400 underline decoration-rose-500/40 underline-offset-8 transition-colors select-none group whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 cursor-pointer text-rose-500 hover:text-rose-400 underline decoration-rose-500/40 underline-offset-8 transition-colors select-none group break-words sm:whitespace-nowrap"
     >
       <span>{displayText}</span>
       <span className="inline-block p-1 rounded-md bg-rose-500/10 text-rose-400 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all text-xs align-middle">

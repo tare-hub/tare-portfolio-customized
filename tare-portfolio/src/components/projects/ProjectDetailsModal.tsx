@@ -31,10 +31,10 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Banner */}
-        <div className={`p-6 sm:p-8 bg-gradient-to-r ${project.accentGradient} border-b border-zinc-800/80 relative`}>
+        <div className={`p-4 sm:p-8 bg-gradient-to-r ${project.accentGradient} border-b border-zinc-800/80 relative`}>
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full bg-black/40 text-zinc-400 hover:text-white hover:bg-black/80 transition-colors"
+            className="absolute top-4 sm:top-5 right-4 sm:right-5 p-2 rounded-full bg-black/40 text-zinc-400 hover:text-white hover:bg-black/80 transition-colors"
             title="Close"
           >
             <X size={18} />
@@ -44,21 +44,21 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
             <span className="px-2.5 py-0.5 rounded-full bg-white/10 text-white font-semibold">
               {project.category}
             </span>
-            <span>SYSTEM ARCHITECTURE SPECIFICATION</span>
+            <span className="hidden sm:inline">SYSTEM ARCHITECTURE SPECIFICATION</span>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
+          <h2 className="text-xl sm:text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
             {project.title}
           </h2>
-          <p className="text-zinc-300 text-sm sm:text-base max-w-2xl leading-relaxed">
+          <p className="text-zinc-300 text-xs sm:text-base max-w-2xl leading-relaxed">
             {project.subtitle}
           </p>
 
-          <div className="flex flex-wrap gap-2 mt-4">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2 mt-4">
             {project.tags.map((tag) => (
               <span
                 key={tag}
-                className="px-2.5 py-1 text-[11px] font-mono rounded bg-black/50 border border-white/10 text-zinc-300"
+                className="px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-[11px] font-mono rounded bg-black/50 border border-white/10 text-zinc-300"
               >
                 {tag}
               </span>
@@ -67,10 +67,10 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
         </div>
 
         {/* Modal Navigation Tabs */}
-        <div className="flex border-b border-zinc-800 bg-[#12111a] px-4 overflow-x-auto text-xs font-mono">
+        <div className="flex border-b border-zinc-800 bg-[#12111a] px-2 sm:px-4 overflow-x-auto text-xs font-mono">
           <button
             onClick={() => handleTabChange('overview')}
-            className={`py-3.5 px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === 'overview'
                 ? 'border-rose-500 text-white'
                 : 'border-transparent text-zinc-400 hover:text-zinc-200'
@@ -80,7 +80,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
           </button>
           <button
             onClick={() => handleTabChange('visual')}
-            className={`py-3.5 px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === 'visual'
                 ? 'border-rose-500 text-white'
                 : 'border-transparent text-zinc-400 hover:text-zinc-200'
@@ -90,7 +90,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
           </button>
           <button
             onClick={() => handleTabChange('playground')}
-            className={`py-3.5 px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === 'playground'
                 ? 'border-rose-500 text-white font-bold'
                 : 'border-transparent text-amber-400 hover:text-amber-300'
@@ -100,7 +100,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
           </button>
           <button
             onClick={() => handleTabChange('schema')}
-            className={`py-3.5 px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === 'schema'
                 ? 'border-rose-500 text-white'
                 : 'border-transparent text-zinc-400 hover:text-zinc-200'
@@ -110,7 +110,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
           </button>
           <button
             onClick={() => handleTabChange('api')}
-            className={`py-3.5 px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === 'api'
                 ? 'border-rose-500 text-white'
                 : 'border-transparent text-zinc-400 hover:text-zinc-200'
@@ -120,7 +120,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
           </button>
           <button
             onClick={() => handleTabChange('metrics')}
-            className={`py-3.5 px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
+            className={`py-3 sm:py-3.5 px-3 sm:px-4 font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap shrink-0 ${
               activeTab === 'metrics'
                 ? 'border-rose-500 text-white'
                 : 'border-transparent text-zinc-400 hover:text-zinc-200'
@@ -131,7 +131,7 @@ export const ProjectDetailsModal: React.FC<ProjectDetailsModalProps> = ({ projec
         </div>
 
         {/* Modal Scrollable Content */}
-        <div className="flex-1 p-6 sm:p-8 overflow-y-auto space-y-6 text-zinc-300 text-sm">
+        <div className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto space-y-6 text-zinc-300 text-sm">
           {activeTab === 'overview' && (
             <div className="space-y-6">
               <div>

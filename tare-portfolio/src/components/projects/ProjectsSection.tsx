@@ -110,7 +110,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
 
                 {/* Info side */}
                 <div
-                  className={`lg:col-span-7 p-8 sm:p-10 flex flex-col justify-between space-y-6 ${
+                  className={`lg:col-span-7 p-5 sm:p-8 lg:p-10 flex flex-col justify-between space-y-5 sm:space-y-6 ${
                     isReverse ? 'lg:order-1' : 'lg:order-2'
                   }`}
                 >
@@ -162,20 +162,20 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onSelectProjec
                   </div>
 
                   {/* Actions */}
-                  <div className="pt-4 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-4">
+                  <div className="pt-4 border-t border-zinc-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
                     <button
                       onClick={() => {
                         soundFx.playClick();
                         onSelectProject(project);
                       }}
-                      className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-rose-950/40 transition-all hover:scale-105"
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold flex items-center justify-center gap-2 shadow-lg shadow-rose-950/40 transition-all hover:scale-105 active:scale-95 text-center"
                     >
                       <Cpu size={14} />
                       <span>Inspect Architecture</span>
                       <ArrowUpRight size={14} />
                     </button>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 justify-center sm:justify-start">
                       <a
                         href={project.githubUrl}
                         target="_blank"

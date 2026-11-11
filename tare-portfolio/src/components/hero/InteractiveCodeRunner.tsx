@@ -99,14 +99,14 @@ export const InteractiveCodeRunner: React.FC = () => {
       </div>
 
       {/* Code Editor Body */}
-      <div className="p-4 font-mono text-[11px] sm:text-xs leading-relaxed text-zinc-300 space-y-1">
+      <div className="p-3 sm:p-4 font-mono text-[11px] sm:text-xs leading-relaxed text-zinc-300 space-y-1 overflow-x-auto">
         <div className="text-zinc-500">
           <span className="text-zinc-600 mr-3">01</span>
           <span className="text-purple-400">interface</span> <span className="text-amber-300">Developer</span> {'{'}
         </div>
-        <div className="text-zinc-500">
+        <div className="text-zinc-500 flex flex-wrap">
           <span className="text-zinc-600 mr-3">02</span>
-          &nbsp;&nbsp;name: <span className="text-emerald-300">string</span>; role: <span className="text-emerald-300">string</span>; status: <span className="text-emerald-300">string</span>;
+          <span>&nbsp;&nbsp;name: <span className="text-emerald-300">string</span>; role: <span className="text-emerald-300">string</span>; status: <span className="text-emerald-300">string</span>;</span>
         </div>
         <div className="text-zinc-500">
           <span className="text-zinc-600 mr-3">03</span>
@@ -128,16 +128,16 @@ export const InteractiveCodeRunner: React.FC = () => {
           <span className="text-zinc-600 mr-3">07</span>
           &nbsp;&nbsp;passion: <span className="text-emerald-400">'{developerState.passion}'</span>,
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center flex-wrap gap-1">
           <span className="text-zinc-600 mr-3">08</span>
-          &nbsp;&nbsp;status:&nbsp;
+          <span>&nbsp;&nbsp;status:&nbsp;</span>
           <select
             value={developerState.status}
             onChange={(e) => {
               soundFx.playClick();
               setDeveloperState({ ...developerState, status: e.target.value });
             }}
-            className="bg-zinc-900 border border-zinc-700 text-emerald-400 font-mono text-xs rounded px-1.5 py-0.5 outline-none hover:border-rose-500 cursor-pointer"
+            className="bg-zinc-900 border border-zinc-700 text-emerald-400 font-mono text-xs rounded px-1.5 py-0.5 outline-none hover:border-rose-500 cursor-pointer max-w-[155px] sm:max-w-none truncate"
           >
             <option value="Available for hire">Available for hire</option>
             <option value="Open for contract projects">Open for contract projects</option>

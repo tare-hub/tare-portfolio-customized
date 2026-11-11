@@ -8,8 +8,7 @@
 - **TypeScript & React**: Modern component architecture, strict type definitions, clean hooks.
 - **Interactive 60 FPS Particle Canvas**: Reactive constellation background with mouse repulsion & shockwave bursts.
 - **In-Browser Code Runner**: Interactive executable code block in Hero with live output and confetti.
-- **Interactive Terminal HUD (`Ctrl + K`)**: Command palette with `help`, `skills`, `projects`, `sudo hire`, `theme`, `sound`, etc.
-- **Synthesizer Sound Engine**: Procedural Web Audio API sound effects with zero external audio assets.
+- **Interactive Terminal HUD (`Ctrl + K`)**: Command palette with `help`, `skills`, `projects`, `sudo hire`, `theme`, etc.
 - **System Architecture Modals**: Deep dives into PharmaJiji, AutoDrive, Media Works, and DevPulse (ERD schemas, REST endpoints, metrics).
 - **Interactive Skills Matrix**: Click any skill to view production code patterns & rationale.
 - **Recruiter Suite**: One-click vCard download, one-click email copy, validated contact dispatch.

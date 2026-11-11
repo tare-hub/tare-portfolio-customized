@@ -137,11 +137,11 @@ export const LiveProjectSimulator: React.FC<LiveProjectSimulatorProps> = ({ proj
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <button
               onClick={simulatePharmaCheckout}
               disabled={isProcessing}
-              className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-rose-950/40 transition-all active:scale-95"
+              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-rose-950/40 transition-all active:scale-95 text-center"
             >
               <Play size={12} className="fill-current" />
               <span>{isProcessing ? 'Executing Transaction...' : 'Simulate Atomic Checkout'}</span>
@@ -153,7 +153,7 @@ export const LiveProjectSimulator: React.FC<LiveProjectSimulatorProps> = ({ proj
                 setPharmaQty(2);
                 setPharmaLogs(['Stock reset to 6 units. Transaction lock released.']);
               }}
-              className="px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs flex items-center gap-1.5 transition-colors"
+              className="w-full sm:w-auto justify-center px-3.5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-xs flex items-center gap-1.5 transition-colors text-center"
             >
               <RefreshCw size={12} />
               <span>Reset Stock</span>
@@ -218,7 +218,7 @@ export const LiveProjectSimulator: React.FC<LiveProjectSimulatorProps> = ({ proj
           <button
             onClick={simulateAutoDriveBooking}
             disabled={isProcessing}
-            className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-950/40 transition-all active:scale-95"
+            className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-950/40 transition-all active:scale-95 text-center"
           >
             <Play size={12} className="fill-current" />
             <span>{isProcessing ? 'Verifying Calendar Range...' : 'Simulate Conflict-Free Booking'}</span>

@@ -54,7 +54,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ onSelectSkill }) =
         </div>
 
         {/* Filter Pills */}
-        <div className="flex flex-wrap gap-2 mb-10 text-xs font-mono">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-8 sm:mb-10 text-[11px] sm:text-xs font-mono">
           {[
             { id: 'all', label: 'ALL SKILLS' },
             { id: 'backend', label: 'BACKEND & PHP' },
@@ -66,7 +66,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ onSelectSkill }) =
             <button
               key={cat.id}
               onClick={() => handleFilterClick(cat.id as typeof filter)}
-              className={`px-4 py-2 rounded-xl transition-all ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl transition-all ${
                 filter === cat.id
                   ? 'bg-rose-600 text-white font-bold shadow-lg shadow-rose-950/40'
                   : 'bg-zinc-900/80 text-zinc-400 hover:text-white border border-zinc-800/80 hover:border-zinc-700'
@@ -78,7 +78,7 @@ export const SkillsSection: React.FC<SkillsSectionProps> = ({ onSelectSkill }) =
         </div>
 
         {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {filteredSkills.map((skill, index) => (
             <div
               key={skill.name}

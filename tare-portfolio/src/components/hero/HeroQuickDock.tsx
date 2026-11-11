@@ -39,11 +39,11 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 pt-2">
+    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-2">
       {/* Recruiter Priority Action */}
       <button
         onClick={triggerRecruiterCheer}
-        className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-950 to-zinc-900 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-white font-mono text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-950/40 hover:scale-105 active:scale-95 transition-all"
+        className="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-950 to-zinc-900 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center gap-1.5 shadow-lg shadow-emerald-950/40 hover:scale-105 active:scale-95 transition-all"
         title="Immediate Recruiter Contact & Priority Dispatch"
       >
         <Sparkles size={13} className="text-emerald-400" />
@@ -53,7 +53,7 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
       {/* Zero-G Cosmos Jump */}
       <button
         onClick={scrollToCosmos}
-        className="px-3 py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs flex items-center gap-1.5 transition-colors"
+        className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center gap-1.5 transition-colors"
         title="Jump to Interactive Floating Language Cosmos"
       >
         <Compass size={13} className="text-rose-400" />
@@ -66,7 +66,7 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
           soundFx.playClick();
           onOpenTerminal();
         }}
-        className="px-3 py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs flex items-center gap-1.5 transition-colors"
+        className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center gap-1.5 transition-colors"
         title="Launch Interactive Terminal (Ctrl + K)"
       >
         <Terminal size={13} className="text-amber-400" />
@@ -79,7 +79,7 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
           soundFx.playClick();
           onOpenResume();
         }}
-        className="px-3 py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-xs flex items-center gap-1.5 transition-colors"
+        className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center gap-1.5 transition-colors"
         title="View Formatted Curriculum Vitae"
       >
         <FileText size={13} className="text-blue-400" />
@@ -92,7 +92,7 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
           soundFx.playClick();
           onToggleMatrix();
         }}
-        className={`px-3 py-2 rounded-xl border font-mono text-xs flex items-center gap-1.5 transition-all ${
+        className={`px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border font-mono text-[11px] sm:text-xs flex items-center gap-1.5 transition-all ${
           isMatrixActive
             ? 'bg-emerald-900/60 border-emerald-500 text-emerald-300 font-bold'
             : 'bg-zinc-900/90 hover:bg-zinc-800 border-zinc-800 text-zinc-400 hover:text-emerald-400'

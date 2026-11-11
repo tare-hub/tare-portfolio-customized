@@ -119,14 +119,14 @@ export const InteractiveSystemDiagram: React.FC = () => {
       </div>
 
       {/* Visual Topology Graph */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
         {NODES.map((node, i) => {
           const isSelected = selectedNode.id === node.id;
           return (
             <button
               key={node.id}
               onClick={() => handleNodeClick(node)}
-              className={`p-3.5 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between relative group ${
+              className={`p-2.5 sm:p-3.5 rounded-xl border text-left transition-all duration-200 flex flex-col justify-between relative group ${
                 isSelected
                   ? 'bg-rose-950/40 border-rose-500 text-white shadow-lg shadow-rose-950/50 scale-[1.02]'
                   : 'bg-[#12111a] border-zinc-800/90 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
@@ -164,9 +164,9 @@ export const InteractiveSystemDiagram: React.FC = () => {
             <span className="text-[10px] font-mono text-rose-400 font-bold uppercase tracking-wider">
               NODE INSPECTOR
             </span>
-            <h5 className="text-white font-bold text-base flex items-center gap-2">
+            <h5 className="text-white font-bold text-sm sm:text-base flex flex-wrap items-center gap-1.5 sm:gap-2">
               <span>{selectedNode.title}</span>
-              <span className="text-zinc-600 text-xs">•</span>
+              <span className="text-zinc-600 text-xs hidden sm:inline">•</span>
               <span className="text-zinc-400 font-normal text-xs">{selectedNode.role}</span>
             </h5>
           </div>
@@ -182,14 +182,14 @@ export const InteractiveSystemDiagram: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono text-zinc-500 uppercase">Core Technology</span>
-            <div className="text-zinc-200 font-mono bg-zinc-900/70 p-2.5 rounded-lg border border-zinc-800">
+            <div className="text-zinc-200 font-mono bg-zinc-900/70 p-2.5 rounded-lg border border-zinc-800 break-words">
               {selectedNode.tech}
             </div>
           </div>
 
           <div className="space-y-1.5">
             <span className="text-[10px] font-mono text-zinc-500 uppercase">Security Invariants</span>
-            <div className="text-zinc-200 font-mono bg-zinc-900/70 p-2.5 rounded-lg border border-zinc-800">
+            <div className="text-zinc-200 font-mono bg-zinc-900/70 p-2.5 rounded-lg border border-zinc-800 break-words">
               {selectedNode.security}
             </div>
           </div>
