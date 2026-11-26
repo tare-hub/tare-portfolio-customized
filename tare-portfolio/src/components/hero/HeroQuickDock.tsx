@@ -1,5 +1,5 @@
 import React from 'react';
-import { Terminal, FileText, Compass, Sparkles, Binary, Volume2, VolumeX, Mail } from 'lucide-react';
+import { Terminal, FileText, Sparkles, Binary, Volume2, VolumeX, Mail } from 'lucide-react';
 import { soundFx } from '../../utils/audio';
 import confetti from 'canvas-confetti';
 
@@ -30,14 +30,6 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
     }
   };
 
-  const scrollToCosmos = () => {
-    soundFx.playClick();
-    const cosmosEl = document.querySelector('section.bg-\\[\\#07060b\\]');
-    if (cosmosEl) {
-      cosmosEl.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-2">
       {/* Recruiter Priority Action */}
@@ -48,16 +40,6 @@ export const HeroQuickDock: React.FC<HeroQuickDockProps> = ({
       >
         <Sparkles size={13} className="text-emerald-400" />
         <span>Recruiter Priority</span>
-      </button>
-
-      {/* Zero-G Cosmos Jump */}
-      <button
-        onClick={scrollToCosmos}
-        className="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white font-mono text-[11px] sm:text-xs flex items-center gap-1.5 transition-colors"
-        title="Jump to Interactive Floating Language Cosmos"
-      >
-        <Compass size={13} className="text-rose-400" />
-        <span>Zero-G Cosmos</span>
       </button>
 
       {/* Terminal CLI */}

@@ -14,15 +14,8 @@ import {
   RestApiIcon,
 } from '../icons/TechBrandIcons';
 import {
-  Sun,
-  Orbit,
-  Zap,
   RotateCcw,
-  Compass,
-  Play,
-  Pause,
   X,
-  Radio,
 } from 'lucide-react';
 import { soundFx } from '../../utils/audio';
 
@@ -254,30 +247,19 @@ export const InteractiveTechSpace: React.FC = () => {
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
-  const [speedMultiplier, setSpeedMultiplier] = useState<number>(1);
-  const [isAligning, setIsAligning] = useState<boolean>(false);
-  const [isPulsing, setIsPulsing] = useState<boolean>(false);
+  const [corePhotoSrc, setCorePhotoSrc] = useState<string>('/assets/software-engineer-core.jpg');
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
     width: 800,
     height: 560,
   });
 
   const anglesRef = useRef<number[]>(PLANETARY_NODES.map((p) => p.angleOffset));
-  const speedMultiplierRef = useRef<number>(1);
-  const isAligningRef = useRef<boolean>(false);
   const dimensionsRef = useRef<{ width: number; height: number }>({ width: 800, height: 560 });
   const lastTimeRef = useRef<number>(performance.now());
   const selectedIdRef = useRef<string | null>(null);
+  const hoveredIdRef = useRef<string | null>(null);
 
   // Sync state to refs for high-performance animation loop
-  useEffect(() => {
-    speedMultiplierRef.current = speedMultiplier;
-  }, [speedMultiplier]);
-
-  useEffect(() => {
-    isAligningRef.current = isAligning;
-  }, [isAligning]);
-
   useEffect(() => {
     dimensionsRef.current = dimensions;
   }, [dimensions]);
@@ -285,6 +267,10 @@ export const InteractiveTechSpace: React.FC = () => {
   useEffect(() => {
     selectedIdRef.current = selectedId;
   }, [selectedId]);
+
+  useEffect(() => {
+    hoveredIdRef.current = hoveredId;
+  }, [hoveredId]);
 
   // Window resize observer to adapt orbit dimensions dynamically
   useEffect(() => {
@@ -321,9 +307,8 @@ export const InteractiveTechSpace: React.FC = () => {
       const dt = Math.min((currentTime - lastTimeRef.current) / 1000, 0.1);
       lastTimeRef.current = currentTime;
 
-      const speed = speedMultiplierRef.current;
-      const aligning = isAligningRef.current;
       const currentSelected = selectedIdRef.current;
+      const currentHovered = hoveredIdRef.current;
       const { width, height } = dimensionsRef.current;
       const cx = width / 2;
       const cy = height / 2;
@@ -343,17 +328,10 @@ export const InteractiveTechSpace: React.FC = () => {
         // Restore visibility for orbiting planets
         el.style.pointerEvents = 'auto';
 
-        // Update planetary angle
-        if (aligning) {
-          // Smoothly pull angle toward 0 rad for cosmic syzygy
-          let current = anglesRef.current[i];
-          let diff = 0 - current;
-          while (diff < -Math.PI) diff += Math.PI * 2;
-          while (diff > Math.PI) diff -= Math.PI * 2;
-          anglesRef.current[i] = current + diff * 0.08;
-        } else if (speed > 0) {
+        // Update planetary angle (pause orbital drift while hovering a stack node)
+        if (!currentHovered) {
           anglesRef.current[i] =
-            (anglesRef.current[i] + planet.speed * speed * (dt * 60)) % (Math.PI * 2);
+            (anglesRef.current[i] + planet.speed * (dt * 60)) % (Math.PI * 2);
         }
 
         const angle = anglesRef.current[i];
@@ -362,11 +340,13 @@ export const InteractiveTechSpace: React.FC = () => {
         const x = cx + rx * Math.cos(angle);
         const y = cy + ry * Math.sin(angle);
 
+        const isHovered = currentHovered === planet.id;
+
         // 3D pseudo-depth perspective based on upper vs lower orbital hemisphere
         const isBack = y < cy;
-        const depthScale = isBack ? 0.92 : 1.05;
-        const depthOpacity = isBack ? 0.85 : 1.0;
-        const zIndex = isBack ? 10 : 25;
+        const depthScale = isHovered ? 1 : isBack ? 0.92 : 1.05;
+        const depthOpacity = isHovered ? 1 : isBack ? 0.85 : 1.0;
+        const zIndex = isHovered ? 45 : isBack ? 10 : 25;
 
         // Visual radius of the planet card
         const elRadius = isMobile ? 24 : 32;
@@ -386,33 +366,9 @@ export const InteractiveTechSpace: React.FC = () => {
   // Click on a planet node: docks in center; if already centered, returns to orbit
   const handleSelectPlanet = (id: string) => {
     soundFx.playClick();
+    hoveredIdRef.current = null;
+    setHoveredId(null);
     setSelectedId((prev) => (prev === id ? null : id));
-  };
-
-  // Planetary Alignment Syzygy (aligns all planets along an orbital ray)
-  const triggerPlanetaryAlignment = () => {
-    soundFx.playClick();
-    setIsAligning(true);
-    setTimeout(() => {
-      setIsAligning(false);
-    }, 2800);
-  };
-
-  // Solar Shockwave Pulse
-  const triggerSolarPulse = () => {
-    soundFx.playSuccess();
-    setIsPulsing(true);
-    setTimeout(() => {
-      setIsPulsing(false);
-    }, 1200);
-  };
-
-  // Reset entire solar system to default state
-  const resetSystem = () => {
-    soundFx.playClick();
-    setSelectedId(null);
-    setSpeedMultiplier(1);
-    setIsAligning(false);
   };
 
   const selectedNode = PLANETARY_NODES.find((p) => p.id === selectedId) || null;
@@ -432,105 +388,24 @@ export const InteractiveTechSpace: React.FC = () => {
       <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10">
-        {/* Top Control Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-800/80">
-          <div>
-            <div className="flex items-center gap-2 text-rose-500 font-mono text-xs font-bold uppercase tracking-wider">
-              <Orbit size={14} className="animate-spin [animation-duration:12s]" />
-              <span>SOLAR TECH COSMOS • ORBITAL GRAVITY FIELD</span>
-            </div>
-            <h3 className="text-white font-extrabold text-xl mt-0.5">
-              Planetary Tech System — Click any technology to dock in center
+        {/* Section Header */}
+        <div className="flex flex-col items-center justify-center text-center pb-5">
+          <div className="flex items-center justify-center gap-4 sm:gap-6 w-full max-w-xl">
+            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-rose-500/40 to-rose-500/75" />
+            <h3
+              style={{ fontFamily: "'Space Grotesk', 'Manrope', sans-serif" }}
+              className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight whitespace-nowrap select-none drop-shadow-[0_0_24px_rgba(244,63,94,0.35)]"
+            >
+              <span className="bg-gradient-to-b from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">
+                Tech
+              </span>{' '}
+              <span className="bg-gradient-to-r from-rose-500 via-pink-400 to-amber-400 bg-clip-text text-transparent">
+                Stacks
+              </span>
             </h3>
+            <div className="h-px flex-1 bg-gradient-to-l from-transparent via-rose-500/40 to-rose-500/75" />
           </div>
-
-          {/* Interactive Mode Pills */}
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-mono">
-            {/* Speed Toggle: Normal / Cosmic / Paused */}
-            <div className="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl p-0.5">
-              <button
-                onClick={() => {
-                  soundFx.playClick();
-                  setSpeedMultiplier(1);
-                }}
-                className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
-                  speedMultiplier === 1
-                    ? 'bg-rose-600 text-white font-bold'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-                title="Normal Orbital Speed"
-              >
-                <Play size={11} /> 1x
-              </button>
-
-              <button
-                onClick={() => {
-                  soundFx.playClick();
-                  setSpeedMultiplier(2);
-                }}
-                className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
-                  speedMultiplier === 2
-                    ? 'bg-cyan-600 text-white font-bold'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-                title="Cosmic 2x Speed"
-              >
-                <Compass size={11} /> 2x
-              </button>
-
-              <button
-                onClick={() => {
-                  soundFx.playClick();
-                  setSpeedMultiplier((prev) => (prev === 0 ? 1 : 0));
-                }}
-                className={`px-2.5 py-1 rounded-lg transition-colors flex items-center gap-1 ${
-                  speedMultiplier === 0
-                    ? 'bg-amber-600 text-white font-bold'
-                    : 'text-zinc-400 hover:text-white'
-                }`}
-                title="Pause / Resume Rotation"
-              >
-                <Pause size={11} />
-              </button>
-            </div>
-
-            {/* Planetary Alignment Syzygy */}
-            <button
-              onClick={triggerPlanetaryAlignment}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 font-bold ${
-                isAligning
-                  ? 'bg-rose-600 text-white border-rose-500 shadow-[0_0_15px_rgba(244,63,94,0.5)]'
-                  : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
-              }`}
-              title="Align all planets along an orbital ray"
-            >
-              <Radio size={12} className={isAligning ? 'animate-pulse' : ''} />
-              <span>Align</span>
-            </button>
-
-            {/* Solar Pulse Shockwave */}
-            <button
-              onClick={triggerSolarPulse}
-              className={`px-2.5 sm:px-3 py-1.5 rounded-xl border transition-all flex items-center gap-1.5 font-bold ${
-                isPulsing
-                  ? 'bg-amber-500 text-zinc-950 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.6)]'
-                  : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/30'
-              }`}
-              title="Trigger Solar Corona Shockwave"
-            >
-              <Zap size={12} className="fill-current" />
-              <span>Pulse</span>
-            </button>
-
-            {/* Reset System */}
-            <button
-              onClick={resetSystem}
-              className="p-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
-              title="Reset Orbits & Deselect Center"
-            >
-              <RotateCcw size={14} />
-            </button>
-          </div>
+          <div className="mt-2.5 h-[2px] w-24 rounded-full bg-gradient-to-r from-transparent via-amber-400/80 to-transparent shadow-[0_0_12px_rgba(251,191,36,0.55)]" />
         </div>
 
         {/* The Solar System Canvas Field */}
@@ -545,7 +420,7 @@ export const InteractiveTechSpace: React.FC = () => {
           }}
           className="relative w-full h-[520px] sm:h-[580px] lg:h-[620px] rounded-2xl overflow-hidden cursor-crosshair touch-none select-none"
         >
-          {/* SVG Layer: Orbital Tracks, Glow Effects, and Alignments */}
+          {/* SVG Layer: Orbital Tracks & Glow Effects */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none">
             {/* Concentric Elliptical Orbit Rings */}
             {[0, 1, 2, 3].map((orbitIdx) => {
@@ -564,8 +439,8 @@ export const InteractiveTechSpace: React.FC = () => {
                       ry={ry}
                       fill="none"
                       stroke={isContainingSelected ? selectedNode.color : hoveredNode?.color}
-                      strokeWidth="2.5"
-                      strokeOpacity="0.45"
+                      strokeWidth="3.5"
+                      strokeOpacity="0.55"
                       className="transition-all duration-300"
                     />
                   )}
@@ -578,43 +453,14 @@ export const InteractiveTechSpace: React.FC = () => {
                     ry={ry}
                     fill="none"
                     stroke={isContainingSelected ? selectedNode.color : '#ffffff'}
-                    strokeWidth="1"
-                    strokeDasharray="4 8"
-                    strokeOpacity={isContainingSelected ? 0.6 : 0.12}
+                    strokeWidth="2"
+                    strokeDasharray="5 7"
+                    strokeOpacity={isContainingSelected ? 0.75 : 0.25}
                     className="transition-all duration-300"
                   />
                 </g>
               );
             })}
-
-            {/* Planetary Alignment Ray */}
-            {isAligning && (
-              <line
-                x1={cx}
-                y1={cy}
-                x2={cx + dimensions.width / 2}
-                y2={cy}
-                stroke="#f43f5e"
-                strokeWidth="2"
-                strokeDasharray="6 4"
-                className="animate-pulse"
-                strokeOpacity="0.7"
-              />
-            )}
-
-            {/* Solar Shockwave Expanding Ripple */}
-            {isPulsing && (
-              <circle
-                cx={cx}
-                cy={cy}
-                r={dimensions.width * 0.45}
-                fill="none"
-                stroke="#f59e0b"
-                strokeWidth="3"
-                className="animate-ping"
-                strokeOpacity="0.5"
-              />
-            )}
           </svg>
 
           {/* ============================================================
@@ -708,24 +554,39 @@ export const InteractiveTechSpace: React.FC = () => {
               </div>
             </div>
           ) : (
-            /* CENTRAL SUN / GRAVITATIONAL CORE (When no node is selected) */
+            /* CENTRAL PROFILE CORE (When no node is selected) */
             <div
               className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center transition-all duration-500 z-20 pointer-events-none select-none"
               style={{ left: `${cx}px`, top: `${cy}px` }}
             >
               {/* Outer Corona Flare Rings */}
-              <div className="absolute w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-amber-500/20 animate-spin [animation-duration:35s]" />
-              <div className="absolute w-28 h-28 sm:w-36 sm:h-36 rounded-full border border-rose-500/30 border-dashed animate-spin [animation-duration:20s] [animation-direction:reverse]" />
+              <div className="absolute w-36 h-36 sm:w-48 sm:h-48 rounded-full border-[1.5px] border-amber-500/35 animate-spin [animation-duration:35s]" />
+              <div className="absolute w-28 h-28 sm:w-40 sm:h-40 rounded-full border-[1.5px] border-rose-500/45 border-dashed animate-spin [animation-duration:20s] [animation-direction:reverse]" />
 
               {/* Radiant Sun Corona Glow */}
-              <div className="absolute w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gradient-to-tr from-amber-500/30 via-rose-500/25 to-yellow-400/20 blur-xl animate-pulse" />
+              <div className="absolute w-24 h-24 sm:w-36 sm:h-36 rounded-full bg-gradient-to-tr from-amber-500/30 via-rose-500/25 to-yellow-400/20 blur-xl animate-pulse" />
 
-              {/* Solar Core Sphere */}
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-amber-400 via-rose-500 to-orange-600 shadow-[0_0_40px_rgba(244,63,94,0.6)] flex flex-col items-center justify-center border border-amber-200/40">
-                <Sun size={isMobile ? 20 : 24} className="text-white animate-pulse" />
-                <span className="text-[7.5px] sm:text-[9px] font-mono font-black tracking-widest text-white uppercase drop-shadow-md mt-0.5">
-                  CORE
-                </span>
+              {/* Profile Photo Core Sphere */}
+              <div className="relative w-[72px] h-[72px] sm:w-24 sm:h-24 rounded-full p-[3px] bg-gradient-to-br from-amber-400 via-rose-500 to-orange-600 shadow-[0_0_45px_rgba(244,63,94,0.65)]">
+                <div className="w-full h-full rounded-full overflow-hidden bg-[#0c0b16] border border-amber-200/30">
+                  <img
+                    src={corePhotoSrc}
+                    alt="Software Engineer Core"
+                    className="w-full h-full object-cover object-center"
+                    style={
+                      corePhotoSrc === '/assets/software-engineer-core.jpg'
+                        ? { transform: 'translate(0%, 17%) scale(1.72)' }
+                        : undefined
+                    }
+                    onError={() => {
+                      if (corePhotoSrc === '/assets/software-engineer-core.jpg') {
+                        setCorePhotoSrc('/assets/tariku-profile.jpg');
+                      } else if (corePhotoSrc !== '/assets/profile-placeholder.svg') {
+                        setCorePhotoSrc('/assets/profile-placeholder.svg');
+                      }
+                    }}
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -748,66 +609,84 @@ export const InteractiveTechSpace: React.FC = () => {
                 }}
                 onMouseEnter={() => {
                   soundFx.playHover();
+                  hoveredIdRef.current = planet.id;
                   setHoveredId(planet.id);
                 }}
-                onMouseLeave={() => setHoveredId(null)}
-                style={{
-                  boxShadow: isHovered
-                    ? `0 0 32px ${planet.glow}`
-                    : `0 0 16px ${planet.glow}`,
+                onMouseLeave={() => {
+                  hoveredIdRef.current = null;
+                  setHoveredId(null);
                 }}
-                className={`absolute w-12 h-12 sm:w-16 sm:h-16 rounded-2xl p-2 sm:p-2.5 flex flex-col items-center justify-center bg-[#0d0c16]/90 border transition-all duration-150 cursor-pointer ${
-                  isHovered ? 'border-white scale-110 z-30' : 'border-white/15'
-                }`}
+                className="absolute w-12 h-12 sm:w-16 sm:h-16 cursor-pointer"
               >
-                {/* Brand Icon */}
-                <div className="shrink-0 drop-shadow-md">
-                  {planet.iconRenderer(isMobile ? 20 : 28)}
-                </div>
+                <div
+                  style={{
+                    boxShadow: isHovered
+                      ? `0 0 42px ${planet.glow}, 0 10px 30px rgba(0, 0, 0, 0.85)`
+                      : `0 0 16px ${planet.glow}`,
+                  }}
+                  className={`w-full h-full rounded-2xl p-2 sm:p-2.5 flex flex-col items-center justify-center border transition-all duration-200 ease-out origin-center ${
+                    isHovered
+                      ? 'bg-[#141224] border-white scale-[1.55] sm:scale-[1.65]'
+                      : 'bg-[#0d0c16]/90 border-white/15 scale-100'
+                  }`}
+                >
+                  {/* Brand Icon */}
+                  <div className="shrink-0 drop-shadow-md">
+                    {planet.iconRenderer(isMobile ? 20 : 28)}
+                  </div>
 
-                {/* Subtitle Badge */}
-                <span className="text-[7.5px] sm:text-[9px] font-mono font-bold tracking-tight text-zinc-300 mt-1 truncate max-w-[46px] sm:max-w-[58px]">
-                  {planet.shortName}
-                </span>
+                  {/* Subtitle Badge */}
+                  <span className="text-[7.5px] sm:text-[9px] font-mono font-bold tracking-tight text-zinc-300 mt-1 truncate max-w-[46px] sm:max-w-[58px]">
+                    {planet.shortName}
+                  </span>
+                </div>
               </div>
             );
           })}
 
           {/* Active Hover Hologram HUD Tooltip */}
-          {hoveredNode && hoveredNode.id !== selectedId && (
-            <div
-              className="absolute pointer-events-none z-50 p-3 sm:p-3.5 rounded-xl bg-[#12111c]/95 border border-white/20 shadow-2xl backdrop-blur-xl max-w-xs transition-opacity duration-150"
-              style={{
-                left: Math.min(
-                  Math.max(cx - 100, 20),
-                  dimensions.width - (isMobile ? 220 : 280)
-                ),
-                top: 20,
-              }}
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <span
-                  className="w-2.5 h-2.5 rounded-full"
-                  style={{ background: hoveredNode.color }}
-                />
-                <span className="text-white font-bold text-xs sm:text-sm">
-                  {hoveredNode.name}
-                </span>
-                <span className="ml-auto text-[8.5px] sm:text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
-                  {hoveredNode.category}
-                </span>
-              </div>
+          {hoveredNode && hoveredNode.id !== selectedId && (() => {
+            const hoveredIndex = PLANETARY_NODES.findIndex((p) => p.id === hoveredNode.id);
+            const hoveredAngle = hoveredIndex >= 0 ? anglesRef.current[hoveredIndex] : 0;
+            const { ry } = getOrbitRadii(hoveredNode.orbitIndex, dimensions.width, dimensions.height);
+            const hoveredY = cy + ry * Math.sin(hoveredAngle);
+            const placeTooltipAtBottom = hoveredY < 165;
 
-              <div className="text-[11px] sm:text-xs text-zinc-300 font-mono font-semibold mb-1">
-                {hoveredNode.role}
-              </div>
+            return (
+              <div
+                className="absolute pointer-events-none z-50 p-3 sm:p-3.5 rounded-xl bg-[#12111c]/95 border border-white/20 shadow-2xl backdrop-blur-xl max-w-xs transition-opacity duration-150"
+                style={{
+                  left: Math.min(
+                    Math.max(cx - 100, 20),
+                    dimensions.width - (isMobile ? 220 : 280)
+                  ),
+                  ...(placeTooltipAtBottom ? { bottom: 20 } : { top: 20 }),
+                }}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full"
+                    style={{ background: hoveredNode.color }}
+                  />
+                  <span className="text-white font-bold text-xs sm:text-sm">
+                    {hoveredNode.name}
+                  </span>
+                  <span className="ml-auto text-[8.5px] sm:text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">
+                    {hoveredNode.category}
+                  </span>
+                </div>
 
-              <div className="flex items-center justify-between text-[9.5px] sm:text-[10px] font-mono text-zinc-400 pt-1.5 border-t border-zinc-800">
-                <span className="text-rose-400 font-bold">● Click to center</span>
-                <span>{hoveredNode.orbitTier}</span>
+                <div className="text-[11px] sm:text-xs text-zinc-300 font-mono font-semibold mb-1">
+                  {hoveredNode.role}
+                </div>
+
+                <div className="flex items-center justify-between text-[9.5px] sm:text-[10px] font-mono text-zinc-400 pt-1.5 border-t border-zinc-800">
+                  <span className="text-rose-400 font-bold">● Click to center</span>
+                  <span>{hoveredNode.orbitTier}</span>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
       </div>
     </section>
